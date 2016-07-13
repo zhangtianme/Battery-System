@@ -1,0 +1,8 @@
+/* 
+  InfoPlist.strings
+  蓄电池系统
+
+  Created by 张天 on 16/4/12.
+  Copyright © 2016年 张天. All rights reserved.
+*/
+"CFBundleDisplayName" = "Battery System";

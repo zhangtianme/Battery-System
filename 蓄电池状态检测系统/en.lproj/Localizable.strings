@@ -1,0 +1,74 @@
+/*
+  Localizable.strings
+  蓄电池系统
+
+  Created by 张天 on 16/3/21.
+  Copyright © 2016年 张天. All rights reserved.
+*/
+//"CFBundleDisplayName" = "Battery System";
+"CFBundleDisplayName" = "Battery System";
+
+"electricityParameters" = "Electricity Parameters";
+"userControl" = "User Control";
+
+"start" = "Start";
+"stop" = "Stop";
+
+"prediction" = "Prediction";
+"batteryVoltage" = "Battery Voltage";
+"dischargeCurrent" = "Discharge Current";
+"internalResistance" = "Internal Resistance";
+"peakPointCurrent" = "Peak Point Current";
+"healthDegree" = "Health Degree";
+"batteryCapacity" = "Battery Capacity";
+"batteryLevel" = "Battery Electricity";
+
+"charge" = "Charge";
+"chargeOperation" = "Charge Operation";
+"chargePowerVoltage" = "Power Voltage";
+"chargeAlternatingCurrent" = "Alternating Current";
+"chargeInputPower" = "Input Power";
+"sourcePowerFactor" = "Source Power Factor";
+"chargePowerConsumption" = "Charge Power Consumption";
+"chargeBatterySideVoltage" = "Battery Side Voltage";
+"chargeBatterySideCurrent" = "Battery Side Current";
+"chargeBatteryLevel" = "Battery Electricity";
+
+"discharge" = "Discharge";
+"dischargeOperation" = "Discharge Operation";
+"dischargeOutputVoltage" = "Output Voltage";
+"dischargeOutputCurrent" = "Output Current";
+"batteryDischargeCapacity" = "Battery Discharge Capacity";
+"actualDischargePeriod" = "Discharge Period";
+
+"setting" = "Setting";
+"nominalCapacity" = "Nominal Capacity";
+"nominalOutputVoltage" = "Single Voltage";
+"cutoffVoltage" = "Cut-off Voltage";
+"maximumDischargeCurrent" = "Discharge Current";
+"Cancel" = "Cancel";
+"Save" = "Save";
+"Edit" = "Edit";
+//"charge" = "Charge";
+//"chargeOperation" = "Charge Operation";
+//"chargePowerVoltage" = "Charge Power Voltage";
+//"chargeAlternatingCurrent" = "Charge Alternating Current";
+//"chargeInputPower" = "Charge Input Power";
+//"sourcePowerFactor" = "Source Power Factor";
+//"chargePowerConsumption" = "Charge Power Consumption";
+//"chargeBatterySideVoltage" = "Charge Battery Side Voltage";
+//"chargeBatterySideCurrent" = "Charge Battery Side Current";
+//"chargeBatteryLevel" = "Charge Battery Electricity";
+//
+//"discharge" = "Discharge";
+//"dischargeOperation" = "Discharge Operation";
+//"dischargeOutputVoltage" = "Discharge Battery Output Voltage";
+//"dischargeOutputCurrent" = "Discharge Battery Output Current";
+//"batteryDischargeCapacity" = "Battery Discharge Capacity";
+//"actualDischargePeriod" = "Actual Discharge Period";
+//
+//"setting" = "Setting";
+//"nominalCapacity" = "Battery Nominal Capacity";
+//"nominalOutputVoltage" = "Battery Nominal Output Voltage";
+//"cutoffVoltage" = "Discharge Protection cut-off Voltage";
+//"maximumDischargeCurrent" = "Maximum Discharge Current";

@@ -13,10 +13,30 @@
 @end
 
 @implementation AppDelegate
-
+-(Battery *)battery
+{
+    if (_battery == nil) {
+        _battery = [[Battery alloc] init];
+    }
+    return _battery;
+}
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
     // Override point for customization after application launch.
+    NSLog(@"%@", NSLocalizedString(@"CFBundleDisplayName", Nil));
+    //fake ip
+    [[IQKeyboardManager sharedManager] setKeyboardDistanceFromTextField:80]; // 距离，是否能调到中间位置
+    
+    //    [[StreetlightManager shareManager] searchAllSwitchHX];
+    
+    [[UINavigationBar appearance] setBarTintColor:themeColor]; // 不使用半透明的话是原色 46-204-113 祖母绿
+    [[UINavigationBar appearance] setTranslucent:NO];                       // 不使用半透明
+    [[UINavigationBar appearance] setTitleTextAttributes:[NSDictionary dictionaryWithObjectsAndKeys:[UIColor whiteColor], NSForegroundColorAttributeName, nil]]; // 导航栏标题颜色
+    [[UINavigationBar appearance] setTintColor:[UIColor whiteColor]]; // 导航栏各种按钮颜色
+    [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleLightContent]; // 状态栏亮色
+    
+    [[UITabBar appearance] setTintColor:themeColor];
+    
     return YES;
 }
 

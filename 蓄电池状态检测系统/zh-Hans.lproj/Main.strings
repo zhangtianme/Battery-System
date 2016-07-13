@@ -1,0 +1,18 @@
+
+/* Class = "UIBarButtonItem"; title = "编辑"; ObjectID = "5qs-nu-ACx"; */
+"5qs-nu-ACx.title" = "编辑";
+
+/* Class = "UITextField"; text = "999"; ObjectID = "Hbm-oW-ABf"; */
+"Hbm-oW-ABf.text" = "999";
+
+/* Class = "UITabBarItem"; title = "放电"; ObjectID = "TMn-tP-9Q7"; */
+"TMn-tP-9Q7.title" = "放电";
+
+/* Class = "UITabBarItem"; title = "预测"; ObjectID = "Zp3-ka-9ck"; */
+"Zp3-ka-9ck.title" = "预测";
+
+/* Class = "UITabBarItem"; title = "设置"; ObjectID = "cWF-Ov-XMM"; */
+"cWF-Ov-XMM.title" = "设置";
+
+/* Class = "UITabBarItem"; title = "充电"; ObjectID = "uQP-XF-jQK"; */
+"uQP-XF-jQK.title" = "充电";
