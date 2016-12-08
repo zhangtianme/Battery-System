@@ -14,7 +14,7 @@
 "start" = "开始";
 "stop" = "停止";
 
-"prediction" = "预测";
+"prediction" = "诊断";
 "batteryVoltage" = "电池电压";
 "dischargeCurrent" = "放电电流";
 "internalResistance" = "电池内阻";
@@ -30,21 +30,21 @@
 "chargeInputPower" = "充电输入功率";
 "sourcePowerFactor" = "电源功率因数";
 "chargePowerConsumption" = "充电耗电量";
-"chargeBatterySideVoltage" = "充电电池侧电压";
-"chargeBatterySideCurrent" = "充电电池侧电流";
+"chargeBatterySideVoltage" = "电池组电压";
+"chargeBatterySideCurrent" = "电池组电流";
 "chargeBatteryLevel" = "电池电量";
 
 "discharge" = "放电";
 "dischargeOperation" = "放电操作";
-"dischargeOutputVoltage" = "放电电池输出电压";
-"dischargeOutputCurrent" = "放电电池输出电流 ";
-"batteryDischargeCapacity" = "电池放电容量";
+"dischargeOutputVoltage" = "输出电压";
+"dischargeOutputCurrent" = "输出电流 ";
+"batteryDischargeCapacity" = "放电容量";
 "actualDischargePeriod" = "实际放电周期";
 
-"setting" = "设置";
+"setting" = "配置";
 "nominalCapacity" = "电池标称容量";
-"nominalOutputVoltage" = "电池标称输出电压";
-"cutoffVoltage" = "放电保护截止电压";
+"nominalOutputVoltage" = "输出电压";
+"cutoffVoltage" = "截止电压";
 "maximumDischargeCurrent" = "最大放电电流";
 
 "Cancel" = "取消";

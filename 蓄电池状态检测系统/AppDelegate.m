@@ -7,18 +7,21 @@
 //
 
 #import "AppDelegate.h"
-
+#import "SlideNavigationController.h"
+#import "MainTabBarController.h"
+#import "LeftViewController.h"
 @interface AppDelegate ()
 
 @end
 
 @implementation AppDelegate
--(Battery *)battery
+-(BatteryGroup *)batteryGroup
 {
-    if (_battery == nil) {
-        _battery = [[Battery alloc] init];
+    if (_batteryGroup == nil) {
+        _batteryGroup = [[BatteryGroup alloc] init];
+        _batteryGroup.address = 0x01;
     }
-    return _battery;
+    return _batteryGroup;
 }
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
@@ -33,10 +36,28 @@
     [[UINavigationBar appearance] setTranslucent:NO];                       // 不使用半透明
     [[UINavigationBar appearance] setTitleTextAttributes:[NSDictionary dictionaryWithObjectsAndKeys:[UIColor whiteColor], NSForegroundColorAttributeName, nil]]; // 导航栏标题颜色
     [[UINavigationBar appearance] setTintColor:[UIColor whiteColor]]; // 导航栏各种按钮颜色
-    [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleLightContent]; // 状态栏亮色
+    [[UINavigationBar appearance] setBackgroundImage:[[UIImage alloc] init] forBarMetrics:UIBarMetricsDefault];
+    [[UINavigationBar appearance] setShadowImage: [[UIImage alloc] init]]; // 阴影关掉
     
-    [[UITabBar appearance] setTintColor:themeColor];
+     [[UITabBar appearance] setTintColor:themeColor];
+    UIStoryboard *mainStoryboard = [UIStoryboard storyboardWithName:@"Main"
+                                                             bundle: nil];
+    LeftViewController *leftMenu = (LeftViewController*)[mainStoryboard
+                                                             instantiateViewControllerWithIdentifier: @"leftMenu"];
+    [SlideNavigationController sharedInstance].leftMenu = leftMenu;
+    [SlideNavigationController sharedInstance].portraitSlideOffset = _window.frame.size.width*0.3;
+    [SlideNavigationController sharedInstance].enableShadow = NO;
     
+    if(![[NSUserDefaults standardUserDefaults] boolForKey:@"firstStart"]){
+        [[NSUserDefaults standardUserDefaults] setBool:YES forKey:@"firstStart"];
+        [[NSUserDefaults standardUserDefaults] setValue:@"192.168.1.25" forKey:IPKey];
+        [[NSUserDefaults standardUserDefaults] setValue:@"8080" forKey:PortKey];
+        
+        [[NSUserDefaults standardUserDefaults] setValue:@"192.168.1.19" forKey:IPKey2];
+        [[NSUserDefaults standardUserDefaults] setValue:@"8080" forKey:PortKey2];
+        
+        [[NSUserDefaults standardUserDefaults] setValue:@"0" forKey:@"BatteryIndex"];
+    }
     return YES;
 }
 

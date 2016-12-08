@@ -14,13 +14,13 @@
 "start" = "Start";
 "stop" = "Stop";
 
-"prediction" = "Prediction";
+"prediction" = "Diagnose";
 "batteryVoltage" = "Battery Voltage";
 "dischargeCurrent" = "Discharge Current";
 "internalResistance" = "Internal Resistance";
 "peakPointCurrent" = "Peak Point Current";
-"healthDegree" = "Health Degree";
-"batteryCapacity" = "Battery Capacity";
+"healthDegree" = "SOH";
+"batteryCapacity" = "SOC";
 "batteryLevel" = "Battery Electricity";
 
 "charge" = "Charge";
@@ -41,34 +41,12 @@
 "batteryDischargeCapacity" = "Battery Discharge Capacity";
 "actualDischargePeriod" = "Discharge Period";
 
-"setting" = "Setting";
-"nominalCapacity" = "Nominal Capacity";
-"nominalOutputVoltage" = "Single Voltage";
-"cutoffVoltage" = "Cut-off Voltage";
-"maximumDischargeCurrent" = "Discharge Current";
+"setting" = "Configure";
+"nominalCapacity" = "Nominal Volume";
+"nominalOutputVoltage" = "Single Battery Voltage";
+"cutoffVoltage" = "Protection Voltage";
+"maximumDischargeCurrent" = "Max Discharge Current";
 "Cancel" = "Cancel";
 "Save" = "Save";
 "Edit" = "Edit";
-//"charge" = "Charge";
-//"chargeOperation" = "Charge Operation";
-//"chargePowerVoltage" = "Charge Power Voltage";
-//"chargeAlternatingCurrent" = "Charge Alternating Current";
-//"chargeInputPower" = "Charge Input Power";
-//"sourcePowerFactor" = "Source Power Factor";
-//"chargePowerConsumption" = "Charge Power Consumption";
-//"chargeBatterySideVoltage" = "Charge Battery Side Voltage";
-//"chargeBatterySideCurrent" = "Charge Battery Side Current";
-//"chargeBatteryLevel" = "Charge Battery Electricity";
-//
-//"discharge" = "Discharge";
-//"dischargeOperation" = "Discharge Operation";
-//"dischargeOutputVoltage" = "Discharge Battery Output Voltage";
-//"dischargeOutputCurrent" = "Discharge Battery Output Current";
-//"batteryDischargeCapacity" = "Battery Discharge Capacity";
-//"actualDischargePeriod" = "Actual Discharge Period";
-//
-//"setting" = "Setting";
-//"nominalCapacity" = "Battery Nominal Capacity";
-//"nominalOutputVoltage" = "Battery Nominal Output Voltage";
-//"cutoffVoltage" = "Discharge Protection cut-off Voltage";
-//"maximumDischargeCurrent" = "Maximum Discharge Current";
+

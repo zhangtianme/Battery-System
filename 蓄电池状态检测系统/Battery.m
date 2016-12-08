@@ -9,11 +9,5 @@
 #import "Battery.h"
 
 @implementation Battery
--(GCDAsyncSocket *)socket
-{
-    if (_socket == nil) {
-        _socket = [[GCDAsyncSocket alloc] initWithDelegate:[BatteryManager shareManager] delegateQueue:dispatch_get_main_queue()];
-    }
-    return _socket;
-}
+
 @end

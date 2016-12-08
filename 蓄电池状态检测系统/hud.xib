@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="11542" systemVersion="16A323" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES">
+    <device id="retina4_7" orientation="portrait">
+        <adaptation id="fullscreen"/>
+    </device>
+    <dependencies>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="11524"/>
+        <capability name="Constraints to layout margins" minToolsVersion="6.0"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <objects>
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner"/>
+        <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
+        <view contentMode="scaleToFill" id="k6x-Zg-VOx">
+            <rect key="frame" x="0.0" y="0.0" width="126" height="72"/>
+            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+            <subviews>
+                <label opaque="NO" userInteractionEnabled="NO" tag="1" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="haha" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="bKc-fX-lGF">
+                    <rect key="frame" x="16" y="8" width="95" height="21"/>
+                    <constraints>
+                        <constraint firstAttribute="height" constant="21" id="hAv-Qu-QGg"/>
+                    </constraints>
+                    <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                    <color key="textColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                    <nil key="highlightedColor"/>
+                </label>
+                <label opaque="NO" userInteractionEnabled="NO" tag="2" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="hehe" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="qBp-iq-TLw">
+                    <rect key="frame" x="16" y="43" width="95" height="21"/>
+                    <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                    <color key="textColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                    <nil key="highlightedColor"/>
+                </label>
+            </subviews>
+            <color key="backgroundColor" red="0.0" green="0.0" blue="0.0" alpha="0.60347521551724137" colorSpace="custom" customColorSpace="sRGB"/>
+            <constraints>
+                <constraint firstItem="bKc-fX-lGF" firstAttribute="centerX" secondItem="k6x-Zg-VOx" secondAttribute="centerX" id="BH2-c4-Ofy"/>
+                <constraint firstItem="qBp-iq-TLw" firstAttribute="bottom" secondItem="k6x-Zg-VOx" secondAttribute="bottomMargin" id="V9g-Dj-qDW"/>
+                <constraint firstItem="bKc-fX-lGF" firstAttribute="trailing" secondItem="qBp-iq-TLw" secondAttribute="trailing" id="VVg-Q6-BeG"/>
+                <constraint firstItem="bKc-fX-lGF" firstAttribute="leading" secondItem="qBp-iq-TLw" secondAttribute="leading" id="ZJa-EE-vRo"/>
+                <constraint firstItem="bKc-fX-lGF" firstAttribute="top" secondItem="k6x-Zg-VOx" secondAttribute="topMargin" id="ccu-ZK-fzW"/>
+                <constraint firstItem="bKc-fX-lGF" firstAttribute="leading" secondItem="k6x-Zg-VOx" secondAttribute="leading" constant="16" id="mBt-wv-zIF"/>
+            </constraints>
+            <nil key="simulatedStatusBarMetrics"/>
+            <freeformSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
+            <point key="canvasLocation" x="166" y="89"/>
+        </view>
+    </objects>
+</document>

@@ -1,27 +1,104 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="9531" systemVersion="15C50" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" launchScreen="YES" useTraitCollections="YES" initialViewController="01J-lp-oVM">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="10117" systemVersion="15D21" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" launchScreen="YES" useTraitCollections="YES" initialViewController="zX7-Am-erq">
     <dependencies>
-        <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="9529"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="10085"/>
+        <capability name="Aspect ratio constraints" minToolsVersion="5.1"/>
+        <capability name="Constraints to layout margins" minToolsVersion="6.0"/>
     </dependencies>
     <scenes>
         <!--View Controller-->
-        <scene sceneID="EHf-IW-A2E">
+        <scene sceneID="vAX-NC-V8u">
             <objects>
-                <viewController id="01J-lp-oVM" sceneMemberID="viewController">
+                <viewController id="zX7-Am-erq" sceneMemberID="viewController">
                     <layoutGuides>
-                        <viewControllerLayoutGuide type="top" id="Llm-lL-Icb"/>
-                        <viewControllerLayoutGuide type="bottom" id="xb3-aO-Qok"/>
+                        <viewControllerLayoutGuide type="top" id="bsy-8L-fEa"/>
+                        <viewControllerLayoutGuide type="bottom" id="Lvs-jZ-BR3"/>
                     </layoutGuides>
-                    <view key="view" contentMode="scaleToFill" id="Ze5-6b-2t3">
-                        <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
+                    <view key="view" contentMode="scaleToFill" id="lxg-Va-mSx">
+                        <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
+                        <subviews>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="三川智能蓄电池管理系统" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="P8V-c9-PMt">
+                                <rect key="frame" x="-4" y="47" width="328" height="43"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="43" id="vdD-k2-vnT"/>
+                                </constraints>
+                                <fontDescription key="fontDescription" type="system" pointSize="27"/>
+                                <color key="textColor" red="1" green="0.99997437" blue="0.99999129769999995" alpha="1" colorSpace="calibratedRGB"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="AppBattery.png" translatesAutoresizingMaskIntoConstraints="NO" id="iYw-V3-sYl">
+                                <rect key="frame" x="100" y="137" width="120" height="120"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" secondItem="iYw-V3-sYl" secondAttribute="height" multiplier="1:1" id="Ngo-bn-HFq"/>
+                                    <constraint firstAttribute="height" constant="120" id="zXK-B0-kr4"/>
+                                </constraints>
+                            </imageView>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="ST-SBMS" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Pf7-lp-iYQ">
+                                <rect key="frame" x="92" y="98" width="137" height="39"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="32"/>
+                                <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="buttomImageAbout.png" translatesAutoresizingMaskIntoConstraints="NO" id="fTT-yo-5fy">
+                                <rect key="frame" x="41" y="434" width="238" height="114"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" secondItem="fTT-yo-5fy" secondAttribute="height" multiplier="23:11" id="gPZ-5M-lqi"/>
+                                    <constraint firstAttribute="height" constant="114" id="vod-tg-dMZ"/>
+                                </constraints>
+                            </imageView>
+                        </subviews>
+                        <color key="backgroundColor" red="0.31372549019607843" green="0.8901960784313725" blue="0.76078431372549016" alpha="1" colorSpace="calibratedRGB"/>
+                        <constraints>
+                            <constraint firstItem="P8V-c9-PMt" firstAttribute="top" secondItem="iYw-V3-sYl" secondAttribute="bottom" constant="8" id="2Js-ER-OSf"/>
+                            <constraint firstItem="fTT-yo-5fy" firstAttribute="centerX" secondItem="P8V-c9-PMt" secondAttribute="centerX" id="C1x-xw-BXF"/>
+                            <constraint firstItem="fTT-yo-5fy" firstAttribute="leading" secondItem="lxg-Va-mSx" secondAttribute="leadingMargin" constant="25" id="ETd-oy-LpR"/>
+                            <constraint firstItem="P8V-c9-PMt" firstAttribute="leading" secondItem="lxg-Va-mSx" secondAttribute="leadingMargin" constant="4" id="FuZ-V3-aOp"/>
+                            <constraint firstItem="iYw-V3-sYl" firstAttribute="centerX" secondItem="lxg-Va-mSx" secondAttribute="centerX" id="Lgl-g7-BxV"/>
+                            <constraint firstItem="Pf7-lp-iYQ" firstAttribute="top" secondItem="P8V-c9-PMt" secondAttribute="bottom" constant="8" id="MtN-DI-ygf"/>
+                            <constraint firstItem="iYw-V3-sYl" firstAttribute="top" secondItem="Pf7-lp-iYQ" secondAttribute="bottom" id="RR0-TY-93k"/>
+                            <constraint firstItem="Lvs-jZ-BR3" firstAttribute="top" secondItem="fTT-yo-5fy" secondAttribute="bottom" constant="66" id="Ssp-VI-5vy"/>
+                            <constraint firstItem="Pf7-lp-iYQ" firstAttribute="top" secondItem="P8V-c9-PMt" secondAttribute="bottom" constant="8" id="XAM-zw-xCo"/>
+                            <constraint firstItem="fTT-yo-5fy" firstAttribute="centerX" secondItem="lxg-Va-mSx" secondAttribute="centerX" id="aJw-aY-q9O"/>
+                            <constraint firstItem="iYw-V3-sYl" firstAttribute="top" secondItem="bsy-8L-fEa" secondAttribute="bottom" constant="64" id="bP7-pR-x7B"/>
+                            <constraint firstItem="Pf7-lp-iYQ" firstAttribute="centerX" secondItem="lxg-Va-mSx" secondAttribute="centerX" id="dKd-7T-68U"/>
+                            <constraint firstAttribute="trailingMargin" secondItem="P8V-c9-PMt" secondAttribute="trailing" constant="-20" id="iv7-Hy-eLC"/>
+                            <constraint firstItem="P8V-c9-PMt" firstAttribute="centerX" secondItem="lxg-Va-mSx" secondAttribute="centerX" id="nLZ-Wz-Z11"/>
+                            <constraint firstItem="Lvs-jZ-BR3" firstAttribute="top" secondItem="fTT-yo-5fy" secondAttribute="bottom" constant="20" id="niW-7W-Hw3"/>
+                            <constraint firstItem="fTT-yo-5fy" firstAttribute="leading" secondItem="lxg-Va-mSx" secondAttribute="leadingMargin" constant="33" id="par-jX-WCp"/>
+                            <constraint firstItem="P8V-c9-PMt" firstAttribute="top" secondItem="bsy-8L-fEa" secondAttribute="bottom" constant="27" id="qGV-Ud-zav"/>
+                            <constraint firstItem="iYw-V3-sYl" firstAttribute="top" secondItem="bsy-8L-fEa" secondAttribute="bottom" constant="64" id="qhd-Fs-OXf"/>
+                            <constraint firstItem="P8V-c9-PMt" firstAttribute="top" secondItem="iYw-V3-sYl" secondAttribute="bottom" constant="8" symbolic="YES" id="tXm-uO-Mpp"/>
+                            <constraint firstItem="P8V-c9-PMt" firstAttribute="height" secondItem="lxg-Va-mSx" secondAttribute="height" id="u3H-2A-3J4"/>
+                            <constraint firstAttribute="trailingMargin" secondItem="fTT-yo-5fy" secondAttribute="trailing" constant="25" id="xFA-so-pV7"/>
+                            <constraint firstItem="P8V-c9-PMt" firstAttribute="leading" secondItem="lxg-Va-mSx" secondAttribute="leadingMargin" constant="-20" id="zgL-IV-Gua"/>
+                        </constraints>
+                        <variation key="default">
+                            <mask key="constraints">
+                                <exclude reference="2Js-ER-OSf"/>
+                                <exclude reference="FuZ-V3-aOp"/>
+                                <exclude reference="tXm-uO-Mpp"/>
+                                <exclude reference="u3H-2A-3J4"/>
+                                <exclude reference="XAM-zw-xCo"/>
+                                <exclude reference="bP7-pR-x7B"/>
+                                <exclude reference="qhd-Fs-OXf"/>
+                                <exclude reference="C1x-xw-BXF"/>
+                                <exclude reference="ETd-oy-LpR"/>
+                                <exclude reference="par-jX-WCp"/>
+                                <exclude reference="xFA-so-pV7"/>
+                                <exclude reference="Ssp-VI-5vy"/>
+                            </mask>
+                        </variation>
                     </view>
+                    <simulatedScreenMetrics key="simulatedDestinationMetrics" type="retina4"/>
                 </viewController>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="iYj-Kq-Ea1" userLabel="First Responder" sceneMemberID="firstResponder"/>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="Xys-Bs-m0f" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="53" y="375"/>
         </scene>
     </scenes>
+    <resources>
+        <image name="AppBattery.png" width="180" height="180"/>
+        <image name="buttomImageAbout.png" width="910" height="437"/>
+    </resources>
 </document>

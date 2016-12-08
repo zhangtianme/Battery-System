@@ -10,39 +10,16 @@
 #import "BatteryManager.h"
 #import "GCDAsyncSocket.h"
 @interface Battery : NSObject
-
-@property (nonatomic,retain)GCDAsyncSocket *socket;
-
-
 //预测数据
 @property(nonatomic,retain) NSNumber *voltage;
-@property(nonatomic,retain) NSNumber *current;
 @property(nonatomic,retain) NSNumber *internalRes;
 @property(nonatomic,retain) NSNumber *maxCurrent;
 @property(nonatomic,retain) NSNumber *healthState;
 @property(nonatomic,retain) NSNumber *capacity;
 @property(nonatomic,retain) NSNumber *currentEnergy;
 //充电数据
-@property(nonatomic,retain) NSNumber *acVoltage;
-@property(nonatomic,retain) NSNumber *acCurrent;
-@property(nonatomic,retain) NSNumber *power;
-@property(nonatomic,retain) NSNumber *powerFactor;
-@property(nonatomic,retain) NSNumber *powerConsumption;
 @property(nonatomic,retain) NSNumber *chargeVoltage;
 @property(nonatomic,retain) NSNumber *chargeCurrent;
 @property(nonatomic,retain) NSNumber *chargeEnergy;
-//连续放电
-@property(nonatomic,retain) NSNumber *dischargeVoltage;
-@property(nonatomic,retain) NSNumber *dischargeCurrent;
-@property(nonatomic,retain) NSNumber *dischargeCapacity;
-@property(nonatomic,retain) NSNumber *hour;
-@property(nonatomic,retain) NSNumber *minute;
-@property(nonatomic,retain) NSNumber *second;
-//参数
-@property(nonatomic,retain) NSNumber *nominalCapacity;
-@property(nonatomic,retain) NSNumber *singleVoltage;
-@property(nonatomic,retain) NSNumber *cutoffVoltage;
-@property(nonatomic,retain) NSNumber *dischargeCurrentPara;
-
-
+@property(assign)BOOL state;
 @end

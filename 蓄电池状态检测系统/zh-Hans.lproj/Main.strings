@@ -11,8 +11,8 @@
 /* Class = "UITabBarItem"; title = "预测"; ObjectID = "Zp3-ka-9ck"; */
 "Zp3-ka-9ck.title" = "预测";
 
-/* Class = "UITabBarItem"; title = "设置"; ObjectID = "cWF-Ov-XMM"; */
-"cWF-Ov-XMM.title" = "设置";
+/* Class = "UITabBarItem"; title = "配置"; ObjectID = "cWF-Ov-XMM"; */
+"cWF-Ov-XMM.title" = "配置";
 
 /* Class = "UITabBarItem"; title = "充电"; ObjectID = "uQP-XF-jQK"; */
 "uQP-XF-jQK.title" = "充电";
