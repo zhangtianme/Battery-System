@@ -8,7 +8,6 @@
 
 #import <Foundation/Foundation.h>
 #import "Define.h"
-@class BatteryGroup;
 
 @protocol BatteryManagerDelegate <NSObject>
 @optional
@@ -17,9 +16,12 @@
 - (void)managerDidReceiveDischargeValue:(NSDictionary *)dic;
 @end
 
+@class BatteryGroup;
 @interface BatteryManager : NSObject<GCDAsyncSocketDelegate>
 
 @property (nonatomic,weak) id<BatteryManagerDelegate> delegate;
+//@property(nonatomic,retain)BatteryGroup *batteryGroup;
+
 + (BatteryManager *)shareManager;
 
 //读取预测数据
@@ -29,17 +31,17 @@
 
 - (void)chargeBattery:(BatteryGroup *)batteryGroup number:(NSUInteger)number start:(BOOL)start;
 //放电
-- (void)disChargeBattery:(BatteryGroup *)battery number:(NSUInteger)number start:(BOOL)start;
+- (void)disChargeBattery:(BatteryGroup *)batteryGroup number:(NSUInteger)number start:(BOOL)start;
 //读取参数
-- (void)readParaOfBattery:(BatteryGroup *)battery;
+- (void)readParaOfBattery:(BatteryGroup *)batteryGroup;
 //设定参数
-- (void)setParaOfBattery:(BatteryGroup *)battery batteryNumber:(NSNumber *)batteryNumber nominalCapacity:(NSNumber *)nominalCapacity singleVoltage:(NSNumber *)singleVoltage cutoffVoltage:(NSNumber *)cutoffVoltage isMaintain:(NSNumber *)isMaintain;
+- (void)setParaOfBattery:(BatteryGroup *)batteryGroup batteryNumber:(NSNumber *)batteryNumber nominalCapacity:(NSNumber *)nominalCapacity singleVoltage:(NSNumber *)singleVoltage cutoffVoltage:(NSNumber *)cutoffVoltage isMaintain:(NSNumber *)isMaintain;
 //自动校准
-- (void)AutoCalibrationOfBattery:(BatteryGroup *)battery start:(BOOL)start;
+- (void)AutoCalibrationOfBattery:(BatteryGroup *)batteryGroup start:(BOOL)start;
 //读取参考值
-- (void)readReferenceValue:(BatteryGroup *)battery;
+- (void)readReferenceValue:(BatteryGroup *)batteryGroup;
 //设置参考值
-- (void)updateReferenceValue:(BatteryGroup *)battery;
+- (void)updateReferenceValue:(BatteryGroup *)batteryGroup;
 
 
 

@@ -8,7 +8,9 @@
 
 #import "PredictViewController.h"
 #import "Define.h"
-@interface PredictViewController ()<BatteryManagerDelegate>
+#import "BatteryService.h"
+#import "MemDataManager.h"
+@interface PredictViewController ()<BatteryManagerDelegate,MemDataDelegate>
 {
     NSUInteger showIndex;
 }
@@ -28,11 +30,16 @@
 //        Byte data[]={0xAA,01,02,0x10,0x2D,0x69,02,0x58,0x61,00,0xF2,00,64,00,0x9F,00,0x0F,0xA4,0xBC};
 //        NSData *receiveData = [NSData dataWithBytes:data length:20];
         //取出对象
-        AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
-        BatteryGroup *batteryGroup = appDelegate.batteryGroup;
+        BatteryGroup *batteryGroup = [MemDataManager shareManager].currentGroup;
 //        [[BatteryManager shareManager] socket:battery.socket didReadData:receiveData withTag:10];
         
-        [[BatteryManager shareManager] readPredictedDataOfBattery:batteryGroup];
+        if ([MemDataManager shareManager].isIntranet) {
+            [[BatteryManager shareManager] readPredictedDataOfBattery:batteryGroup];
+        }
+        else
+        {
+            [[MemDataManager shareManager] updataRealData];
+        }
         //加HUD
         [MBProgressHUD showMessage:nil];
    
@@ -41,12 +48,22 @@
             [MBProgressHUD hideHUD];
         });
     }];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(changeBattery) name:@"ChangeBattery" object:nil];
+}
+- (void)changeBattery
+{
+    [self.tableView reloadData];
+}
+- (void)dealloc
+{
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 - (void)viewWillAppear:(BOOL)animated
 {
     [super viewWillAppear:animated];
-     self.tabBarController.title = @"电池状态预测";
+//     self.tabBarController.title = @"电池状态预测";
     [[BatteryManager shareManager] setDelegate:self];
+    [MemDataManager shareManager].delegate = self;
     //更新界面
     [self.tableView reloadData];
     
@@ -62,11 +79,19 @@
 }
 - (void)refresh
 {
-    AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
-    BatteryGroup *batteryGroup = appDelegate.batteryGroup;
+    BatteryGroup *batteryGroup = [MemDataManager shareManager].currentGroup;
     //        [[BatteryManager shareManager] socket:battery.socket didReadData:receiveData withTag:10];
+    if ([MemDataManager shareManager].isIntranet) {
+         [[BatteryManager shareManager] readPredictedDataOfBattery:batteryGroup];
+    }
+    else
+    {
+        [[MemDataManager shareManager] updataRealData];
+//       NSDictionary *dic = [BatteryService inquiryPackRealDataWithAddr:@"1"];
+//        NSLog(@"%@",dic);
+    }
     
-    [[BatteryManager shareManager] readPredictedDataOfBattery:batteryGroup];
+   
     //加HUD
     [MBProgressHUD showMessage:nil];
     
@@ -77,6 +102,11 @@
 
 }
 #pragma mark -  BatteryManagerDelegate
+- (void)serviceDidReceiveData
+{
+    //更新界面
+    [self.tableView reloadData];
+}
 -(void)managerDidReceiveData
 {
     //更新界面
@@ -88,7 +118,7 @@
     return showIndex==0?4:6;
 }
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-    return showIndex==0?6:4;
+    return showIndex==0?7:4;
 }
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
@@ -97,9 +127,8 @@
         cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleValue1 reuseIdentifier:@"Cell"];
     }
     if (showIndex == 0) {
-        //取出对象
-        AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
-        BatteryGroup *batteryGroup = appDelegate.batteryGroup;
+        
+        BatteryGroup *batteryGroup = [MemDataManager shareManager].currentGroup;
         NSString *batteryVoltage = NSLocalizedString(@"batteryVoltage", nil);
         NSString *internalResistance = NSLocalizedString(@"internalResistance", nil);
         NSString *peakPointCurrent = NSLocalizedString(@"peakPointCurrent", nil);
@@ -113,7 +142,8 @@
                            @[peakPointCurrent,@"maxCurrent",@"A",@"currentIcon"],
                            @[healthDegree,@"healthState",@"%",@"health"],
                            @[batteryLevel,@"currentEnergy",@"%",@"elecIcon"],
-                           @[batteryCapacity,@"capacity",@"AH",@"elecIcon"]
+                           @[batteryCapacity,@"capacity",@"AH",@"elecIcon"],
+                           @[@"获取时间",@"getTimeFore",@"",@"time"]
                            ];
         cell.textLabel.text = [array[indexPath.row] firstObject];
         cell.textLabel.font = [UIFont systemFontOfSize:16];

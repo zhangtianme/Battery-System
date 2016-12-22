@@ -129,9 +129,7 @@
 }
 - (void)controlBtnClicked:(UIButton *)sender
 {
-    //取出对象
-    AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
-    BatteryGroup *batteryGroup = appDelegate.batteryGroup;
+    BatteryGroup *batteryGroup = [MemDataManager shareManager].currentGroup;
     if (sender.tag == 1) {
         [[BatteryManager shareManager] readReferenceValue:batteryGroup];
         [mbHud showWithTitle:@"读取参考值" detail:nil];

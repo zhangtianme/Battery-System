@@ -22,4 +22,5 @@
 @property(nonatomic,retain) NSNumber *chargeCurrent;
 @property(nonatomic,retain) NSNumber *chargeEnergy;
 @property(assign)BOOL state;
+@property(nonatomic,retain)NSString *getTimeFore;
 @end

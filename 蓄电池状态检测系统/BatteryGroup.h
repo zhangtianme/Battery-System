@@ -13,7 +13,13 @@
 @class Battery;
 @interface BatteryGroup : NSObject
 @property (nonatomic,retain)GCDAsyncSocket *socket;
+@property (nonatomic,retain)NSString *ip;
+@property (nonatomic,retain)NSString *name;
+@property (nonatomic,assign)NSUInteger port;
+
+
 @property (nonatomic,assign)NSUInteger address;
+@property (nonatomic,assign)NSString *bid;
 @property (nonatomic,strong) NSArray<Battery *> *batterys;
 
 @property(nonatomic,retain) NSNumber *acVoltage;

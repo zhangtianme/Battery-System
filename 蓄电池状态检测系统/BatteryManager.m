@@ -7,7 +7,7 @@
 //
 
 #import "BatteryManager.h"
-
+#import "MemDataManager.h"
 #define WriteTimeout 3
 //#define deviceAddress 0x01
 
@@ -29,9 +29,9 @@
     //socket确保连接
     if (![sock isConnected]) {
         NSError *err = nil;
-        [sock connectToHost:defaultIP onPort:HostPort error:&err];
+        [sock connectToHost:batteryGroup.ip onPort:batteryGroup.port error:&err];
     }
-    NSLog(@"ip port-----%@---%d",defaultIP,HostPort);
+    NSLog(@"ip port-----%@---%lu",batteryGroup.ip,(unsigned long)batteryGroup.port);
     //数据封装
     Byte data[]={0xAA,batteryGroup.address,2,2,0,0};
     //CRC校验
@@ -47,7 +47,7 @@
     //socket确保连接
     if (![sock isConnected]) {
         NSError *err = nil;
-        [sock connectToHost:defaultIP onPort:HostPort error:&err];
+        [sock connectToHost:batteryGroup.ip onPort:batteryGroup.port error:&err];
     }
     //数据封装
     Byte data[]={0xAA,batteryGroup.address,3,2,0,0};
@@ -64,7 +64,7 @@
     //socket确保连接
     if (![sock isConnected]) {
         NSError *err = nil;
-        [sock connectToHost:defaultIP onPort:HostPort error:&err];
+        [sock connectToHost:batteryGroup.ip onPort:batteryGroup.port error:&err];
     }
     //数据封装
     Byte data[]={0xAA,batteryGroup.address,3,4,number,start,0,0};
@@ -75,16 +75,16 @@
     //发送数据
     [sock writeData:sendData withTimeout:WriteTimeout tag:1];
 }
-- (void)disChargeBattery:(BatteryGroup *)battery number:(NSUInteger)number start:(BOOL)start
+- (void)disChargeBattery:(BatteryGroup *)batteryGroup number:(NSUInteger)number start:(BOOL)start
 {
-    GCDAsyncSocket *sock = battery.socket;
+    GCDAsyncSocket *sock = batteryGroup.socket;
     //socket确保连接
     if (![sock isConnected]) {
         NSError *err = nil;
-        [sock connectToHost:defaultIP onPort:HostPort error:&err];
+        [sock connectToHost:batteryGroup.ip onPort:batteryGroup.port error:&err];
     }
     //数据封装
-    Byte data[]={0xAA,battery.address,4,4,number,start,0,0};
+    Byte data[]={0xAA,batteryGroup.address,4,4,number,start,0,0};
     //CRC校验
     data[6] = [self getCRC16Code:data withNumber:6 fromIndex:0]%256;//CRC_L
     data[7] = [self getCRC16Code:data withNumber:6 fromIndex:0]/256;//CRC_H
@@ -93,16 +93,16 @@
     [sock writeData:sendData withTimeout:WriteTimeout tag:1];
     
 }
-- (void)readParaOfBattery:(BatteryGroup *)battery
+- (void)readParaOfBattery:(BatteryGroup *)batteryGroup
 {
-    GCDAsyncSocket *sock = battery.socket;
+    GCDAsyncSocket *sock = batteryGroup.socket;
     //socket确保连接
     if (![sock isConnected]) {
         NSError *err = nil;
-        [sock connectToHost:defaultIP onPort:HostPort error:&err];
+        [sock connectToHost:batteryGroup.ip onPort:batteryGroup.port error:&err];
     }
     //数据封装
-    Byte data[]={0xAA,battery.address,5,2,0,0};
+    Byte data[]={0xAA,batteryGroup.address,5,2,0,0};
     //CRC校验
     data[4] = [self getCRC16Code:data withNumber:4 fromIndex:0]%256;//CRC_L
     data[5] = [self getCRC16Code:data withNumber:4 fromIndex:0]/256;//CRC_H
@@ -110,13 +110,13 @@
     //发送数据
     [sock writeData:sendData withTimeout:WriteTimeout tag:1];
 }
-- (void)setParaOfBattery:(BatteryGroup *)battery batteryNumber:(NSNumber *)batteryNumber nominalCapacity:(NSNumber *)nominalCapacity singleVoltage:(NSNumber *)singleVoltage cutoffVoltage:(NSNumber *)cutoffVoltage isMaintain:(NSNumber *)isMaintain
+- (void)setParaOfBattery:(BatteryGroup *)batteryGroup batteryNumber:(NSNumber *)batteryNumber nominalCapacity:(NSNumber *)nominalCapacity singleVoltage:(NSNumber *)singleVoltage cutoffVoltage:(NSNumber *)cutoffVoltage isMaintain:(NSNumber *)isMaintain
 {
-    GCDAsyncSocket *sock = battery.socket;
+    GCDAsyncSocket *sock = batteryGroup.socket;
     //socket确保连接
     if (![sock isConnected]) {
         NSError *err = nil;
-        [sock connectToHost:defaultIP onPort:HostPort error:&err];
+        [sock connectToHost:batteryGroup.ip onPort:batteryGroup.port error:&err];
     }
     //取出参数
     Byte nominalCapacity_H = nominalCapacity.intValue/256;
@@ -128,7 +128,7 @@
     Byte batteryNumberByte = batteryNumber.intValue;
     Byte isMaintainByte = isMaintain.intValue;
     //数据封装
-    Byte data[]={0xAA,battery.address,6,0x10,nominalCapacity_H,nominalCapacity_L,singleVoltage_H,singleVoltage_L,cutoffVoltage_H,cutoffVoltage_L,batteryNumberByte,0,isMaintainByte,0,0,0,0,0,0,0};
+    Byte data[]={0xAA,batteryGroup.address,6,0x10,nominalCapacity_H,nominalCapacity_L,singleVoltage_H,singleVoltage_L,cutoffVoltage_H,cutoffVoltage_L,batteryNumberByte,0,isMaintainByte,0,0,0,0,0,0,0};
     //CRC校验
     data[18] = [self getCRC16Code:data withNumber:18 fromIndex:0]%256;//CRC_L
     data[19] = [self getCRC16Code:data withNumber:18 fromIndex:0]/256;//CRC_H
@@ -136,16 +136,16 @@
     //发送数据
     [sock writeData:sendData withTimeout:WriteTimeout tag:1];
 }
-- (void)AutoCalibrationOfBattery:(BatteryGroup *)battery start:(BOOL)start
+- (void)AutoCalibrationOfBattery:(BatteryGroup *)batteryGroup start:(BOOL)start
 {
-    GCDAsyncSocket *sock = battery.socket;
+    GCDAsyncSocket *sock = batteryGroup.socket;
     //socket确保连接
     if (![sock isConnected]) {
         NSError *err = nil;
-        [sock connectToHost:defaultIP onPort:HostPort error:&err];
+        [sock connectToHost:batteryGroup.ip onPort:batteryGroup.port error:&err];
     }
     //数据封装
-    Byte data[]={0xAA,battery.address,7,3,start,0,0};
+    Byte data[]={0xAA,batteryGroup.address,7,3,start,0,0};
     //CRC校验
     data[5] = [self getCRC16Code:data withNumber:5 fromIndex:0]%256;//CRC_L
     data[6] = [self getCRC16Code:data withNumber:5 fromIndex:0]/256;//CRC_H
@@ -154,16 +154,16 @@
     [sock writeData:sendData withTimeout:WriteTimeout tag:1];
     
 }
-- (void)readReferenceValue:(BatteryGroup *)battery
+- (void)readReferenceValue:(BatteryGroup *)batteryGroup
 {
-    GCDAsyncSocket *sock = battery.socket;
+    GCDAsyncSocket *sock = batteryGroup.socket;
     //socket确保连接
     if (![sock isConnected]) {
         NSError *err = nil;
-        [sock connectToHost:defaultIP onPort:HostPort error:&err];
+        [sock connectToHost:batteryGroup.ip onPort:batteryGroup.port error:&err];
     }
     //数据封装
-    Byte data[]={0xAA,battery.address,8,2,0,0};
+    Byte data[]={0xAA,batteryGroup.address,8,2,0,0};
     //CRC校验
     data[4] = [self getCRC16Code:data withNumber:4 fromIndex:0]%256;//CRC_L
     data[5] = [self getCRC16Code:data withNumber:4 fromIndex:0]/256;//CRC_H
@@ -172,16 +172,16 @@
     [sock writeData:sendData withTimeout:WriteTimeout tag:1];
     
 }
-- (void)updateReferenceValue:(BatteryGroup *)battery
+- (void)updateReferenceValue:(BatteryGroup *)batteryGroup
 {
-    GCDAsyncSocket *sock = battery.socket;
+    GCDAsyncSocket *sock = batteryGroup.socket;
     //socket确保连接
     if (![sock isConnected]) {
         NSError *err = nil;
-        [sock connectToHost:defaultIP onPort:HostPort error:&err];
+        [sock connectToHost:batteryGroup.ip onPort:batteryGroup.port error:&err];
     }
     //数据封装
-    Byte data[]={0xAA,battery.address,9,2,0,0};
+    Byte data[]={0xAA,batteryGroup.address,9,2,0,0};
     //CRC校验
     data[4] = [self getCRC16Code:data withNumber:4 fromIndex:0]%256;//CRC_L
     data[5] = [self getCRC16Code:data withNumber:4 fromIndex:0]/256;//CRC_H
@@ -199,8 +199,7 @@
         return;
     }
     //取出对象
-    AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
-    BatteryGroup *batteryGroup = appDelegate.batteryGroup;
+    BatteryGroup *batteryGroup = [[MemDataManager shareManager].groupArray objectAtIndex:[MemDataManager shareManager].currentIndex];
     //取功能码
     Byte *functionCodeBytes =(Byte *) [[data subdataWithRange:NSMakeRange(2, 1)] bytes];
     int functionCode = functionCodeBytes[0];
@@ -458,7 +457,7 @@
 //    //socket确保连接
 //    if (![sock isConnected]) {
 //        NSError *err = nil;
-//        [sock connectToHost:defaultIP onPort:HostPort error:&err];
+//        [sock connectToHost:batteryGroup.ip onPort:batteryGroup.port error:&err];
 //    }
 //    //数据封装
 //    Byte data[]={0xAA,battery.address,3,3,1,0,0};
@@ -475,7 +474,7 @@
 //    //socket确保连接
 //    if (![sock isConnected]) {
 //        NSError *err = nil;
-//        [sock connectToHost:defaultIP onPort:HostPort error:&err];
+//        [sock connectToHost:batteryGroup.ip onPort:batteryGroup.port error:&err];
 //    }
 //    //数据封装
 //    Byte data[]={0xAA,battery.address,3,3,0,0,0};
@@ -493,7 +492,7 @@
 //    //socket确保连接
 //    if (![sock isConnected]) {
 //        NSError *err = nil;
-//        [sock connectToHost:defaultIP onPort:HostPort error:&err];
+//        [sock connectToHost:batteryGroup.ip onPort:batteryGroup.port error:&err];
 //    }
 //    //数据封装
 //    Byte data[]={0xAA,battery.address,4,3,1,0,0};
@@ -510,7 +509,7 @@
 //    //socket确保连接
 //    if (![sock isConnected]) {
 //        NSError *err = nil;
-//        [sock connectToHost:defaultIP onPort:HostPort error:&err];
+//        [sock connectToHost:batteryGroup.ip onPort:batteryGroup.port error:&err];
 //    }
 //    //数据封装
 //    Byte data[]={0xAA,battery.address,4,3,0,0,0};

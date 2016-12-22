@@ -9,7 +9,7 @@
 #import "SettingViewController.h"
 #import "Define.h"
 #import "ZXPPickerView.h"
-@interface SettingViewController ()<BatteryManagerDelegate,ZXPPickerViewDelegate>
+@interface SettingViewController ()<BatteryManagerDelegate,ZXPPickerViewDelegate,MemDataDelegate>
 {
     BOOL isEdit;
     BOOL isMaintain;
@@ -27,10 +27,18 @@
     
     __weak typeof(self) weakSelf = self;
     [self.tableView addHeaderWithCallback:^{
-        //取出对象
-        AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
-        BatteryGroup *batteryGroup = appDelegate.batteryGroup;
-        [[BatteryManager shareManager] readParaOfBattery:batteryGroup];
+        BatteryGroup *batteryGroup = [MemDataManager shareManager].currentGroup;
+        //        [[BatteryManager shareManager] socket:battery.socket didReadData:receiveData withTag:10];
+        if ([MemDataManager shareManager].isIntranet) {
+            [[BatteryManager shareManager] readPredictedDataOfBattery:batteryGroup];
+        }
+        else
+        {
+            [[MemDataManager shareManager] updataRealData];
+            //       NSDictionary *dic = [BatteryService inquiryPackRealDataWithAddr:@"1"];
+            //        NSLog(@"%@",dic);
+        }
+
         //加HUD
         [MBProgressHUD showMessage:nil];
         dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.4 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
@@ -38,18 +46,26 @@
             [MBProgressHUD hideHUD];
         });
     }];
-
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(changeBattery) name:@"ChangeBattery" object:nil];
+}
+- (void)changeBattery
+{
+    [self.tableView reloadData];
+}
+- (void)dealloc
+{
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 - (void)viewWillAppear:(BOOL)animated
 {
     [super viewWillAppear:animated];
-    NSString *setting = NSLocalizedString(@"setting", nil);
-    self.tabBarController.title = setting;
+//    NSString *setting = NSLocalizedString(@"setting", nil);
+//    self.tabBarController.title = setting;
     //取出对象
-    AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
-     BatteryGroup *batteryGroup = appDelegate.batteryGroup;
+    BatteryGroup *batteryGroup = [MemDataManager shareManager].currentGroup;
     [[BatteryManager shareManager] readParaOfBattery:batteryGroup];
     [[BatteryManager shareManager] setDelegate:self];
+      [MemDataManager shareManager].delegate = self;
     //更新界面
     [self.tableView reloadData];
 }
@@ -59,7 +75,11 @@
     //更新界面
     [self.tableView reloadData];
 }
-
+- (void)serviceDidReceiveData
+{
+    //更新界面
+    [self.tableView reloadData];
+}
 #pragma mark - Table view data source
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
 {
@@ -155,9 +175,7 @@
    
 
     //取出对象
-    AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
-    BatteryGroup *batteryGroup = appDelegate.batteryGroup;
-    
+    BatteryGroup *batteryGroup = [MemDataManager shareManager].currentGroup;
     
     NSString *nominalCapacity = NSLocalizedString(@"nominalCapacity", nil);
     NSString *nominalOutputVoltage = NSLocalizedString(@"nominalOutputVoltage", nil);
@@ -325,8 +343,7 @@
         textField.enabled = !textField.enabled;
     }
     //设定参数
-    AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
-    BatteryGroup *batteryGroup = appDelegate.batteryGroup;
+    BatteryGroup *batteryGroup = [MemDataManager shareManager].currentGroup;
     NSMutableArray *valueArray = [NSMutableArray array];
     //取出4个参数值
     for (int i = 0; i<3; i++) {

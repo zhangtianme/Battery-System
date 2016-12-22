@@ -22,18 +22,8 @@
 #import "BatteryGroup.h"
 #import "UIGlossyButton.h"
 #import "UIView+Extension.h"
-
-
-#define IPKey @"IP"
-#define PortKey @"Port"
-#define IPKey2 @"IP2"
-#define PortKey2 @"Port2"
-
-#define defaultBatteryIndex [[NSUserDefaults standardUserDefaults] valueForKey:@"BatteryIndex"]
-
-#define defaultIP [defaultBatteryIndex isEqualToString:@"0"]?[[NSUserDefaults standardUserDefaults] valueForKey:IPKey]:[[NSUserDefaults standardUserDefaults] valueForKey:IPKey2]
-#define HostPort [defaultBatteryIndex isEqualToString:@"0"]?[[[NSUserDefaults standardUserDefaults] valueForKey:PortKey] intValue]:[[[NSUserDefaults standardUserDefaults] valueForKey:PortKey2] intValue]
-
+#import "MemDataManager.h"
+#import "BatteryService.h"
 
 #define color(r,g,b) [UIColor colorWithRed:r/255.0 green:g/255.0 blue:b/255.0 alpha:1.0]
 #define RGB(rgbValue) [UIColor colorWithRed:((float)((rgbValue & 0xFF0000) >> 16))/255.0 green:((float)((rgbValue & 0xFF00) >> 8))/255.0 blue:((float)(rgbValue & 0xFF))/255.0 alpha:1.0]

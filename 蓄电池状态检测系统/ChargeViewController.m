@@ -8,7 +8,7 @@
 
 #import "ChargeViewController.h"
 #import "Define.h"
-@interface ChargeViewController ()<BatteryManagerDelegate>
+@interface ChargeViewController ()<BatteryManagerDelegate,MemDataDelegate>
 {
     MBProgressHUD *mbHud;
 }
@@ -34,11 +34,19 @@
         //        Byte data[]={0xAA,01,02,0x10,0x2D,0x69,02,0x58,0x61,00,0xF2,00,64,00,0x9F,00,0x0F,0xA4,0xBC};
         //        NSData *receiveData = [NSData dataWithBytes:data length:20];
         //取出对象
-        AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
-        BatteryGroup *batteryGroup = appDelegate.batteryGroup;
+        BatteryGroup *batteryGroup = [MemDataManager shareManager].currentGroup;
         //        [[BatteryManager shareManager] socket:battery.socket didReadData:receiveData withTag:10];
+        if ([MemDataManager shareManager].isIntranet) {
+            [[BatteryManager shareManager] readPredictedDataOfBattery:batteryGroup];
+        }
+        else
+        {
+            [[MemDataManager shareManager] updataRealData];
+            //       NSDictionary *dic = [BatteryService inquiryPackRealDataWithAddr:@"1"];
+            //        NSLog(@"%@",dic);
+        }
         
-        [[BatteryManager shareManager] readChargeBatteryGroup:batteryGroup];
+
         //加HUD
         [MBProgressHUD showMessage:nil];
         
@@ -60,14 +68,24 @@
 //            [MBProgressHUD hideHUD];
 //        });
 //    }];
-
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(changeBattery) name:@"ChangeBattery" object:nil];
+}
+- (void)changeBattery
+{
+    [self.tableView reloadData];
+}
+- (void)dealloc
+{
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 - (void)viewWillAppear:(BOOL)animated
 {
     [super viewWillAppear:animated];
-    NSString *charge = NSLocalizedString(@"charge", nil);
-    self.tabBarController.title = charge;
+     [MemDataManager shareManager].delegate = self;
+//    NSString *charge = NSLocalizedString(@"charge", nil);
+//    self.tabBarController.title = charge;
     [[BatteryManager shareManager] setDelegate:self];
+     [MemDataManager shareManager].delegate = self;
     //更新界面
     [self.tableView reloadSections:[NSIndexSet indexSetWithIndex:1] withRowAnimation:UITableViewRowAnimationNone];
 
@@ -83,11 +101,19 @@
 - (void)refresh
 {
     //取出对象
-    AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
-    BatteryGroup *batteryGroup = appDelegate.batteryGroup;
+    BatteryGroup *batteryGroup = [MemDataManager shareManager].currentGroup;
     //        [[BatteryManager shareManager] socket:battery.socket didReadData:receiveData withTag:10];
+    if ([MemDataManager shareManager].isIntranet) {
+        [[BatteryManager shareManager] readPredictedDataOfBattery:batteryGroup];
+    }
+    else
+    {
+        [[MemDataManager shareManager] updataRealData];
+        //       NSDictionary *dic = [BatteryService inquiryPackRealDataWithAddr:@"1"];
+        //        NSLog(@"%@",dic);
+    }
     
-    [[BatteryManager shareManager] readChargeBatteryGroup:batteryGroup];
+
     //加HUD
     [MBProgressHUD showMessage:nil];
     
@@ -99,6 +125,11 @@
 }
 
 #pragma mark -  BatteryManagerDelegate
+- (void)serviceDidReceiveData
+{
+    //更新界面
+    [self.tableView reloadData];
+}
 -(void)managerDidReceiveData
 {
     //更新界面
@@ -125,8 +156,7 @@
             cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleValue1 reuseIdentifier:@"Cell"];
         }
         //取出对象
-        AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
-        BatteryGroup *batteryGroup = appDelegate.batteryGroup;
+        BatteryGroup *batteryGroup = [MemDataManager shareManager].currentGroup;
         
         NSString *chargePowerVoltage = NSLocalizedString(@"chargePowerVoltage", nil);
         NSString *chargeAlternatingCurrent = NSLocalizedString(@"chargeAlternatingCurrent", nil);
@@ -209,8 +239,7 @@
             cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleValue1 reuseIdentifier:@"Cell"];
         }
         //取出对象
-        AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
-        BatteryGroup *batteryGroup = appDelegate.batteryGroup;
+        BatteryGroup *batteryGroup = [MemDataManager shareManager].currentGroup;
         
         
         NSString *chargePowerVoltage = @"电压";
@@ -289,18 +318,41 @@
 - (void)controlBtnClicked:(UIButton *)sender
 {
     //取出对象
-    AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
-    BatteryGroup *batteryGroup = appDelegate.batteryGroup;
+    BatteryGroup *batteryGroup = [MemDataManager shareManager].currentGroup;
     UITableViewCell *cell = (UITableViewCell *)sender.superview.superview;
     NSUInteger index = [[self.tableView indexPathForCell:cell] section]-1;
     
     if (sender.tag == 1) { //开始
-        [[BatteryManager shareManager] chargeBattery:batteryGroup number:index start:YES];
+        if ([MemDataManager shareManager].isIntranet) {
+            [[BatteryManager shareManager] chargeBattery:batteryGroup number:index start:YES];
+        }
+        else
+        {
+            [BatteryService insertChargeOrderAddr:batteryGroup.address number:index isStart:YES];
+            
+            dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(5.0 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+                 [[MemDataManager shareManager] updataRealData];
+            });
+        }
+        
+
+     
         [mbHud showWithTitle:@"开始充电" detail:nil];
         [mbHud hide:YES afterDelay:1];
     }
     else{
-        [[BatteryManager shareManager] chargeBattery:batteryGroup number:index start:NO];
+       
+        if ([MemDataManager shareManager].isIntranet) {
+            [[BatteryManager shareManager] chargeBattery:batteryGroup number:index start:NO];
+        }
+        else
+        {
+            [BatteryService insertChargeOrderAddr:batteryGroup.address  number:index isStart:NO];
+
+            dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(5.0 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+                [[MemDataManager shareManager] updataRealData];
+            });
+        }
         [mbHud showWithTitle:@"停止充电" detail:nil];
         [mbHud hide:YES afterDelay:1];
     }

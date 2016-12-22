@@ -10,21 +10,24 @@
 #import "SlideNavigationController.h"
 #import "MainTabBarController.h"
 #import "LeftViewController.h"
+#import "MemDataManager.h"
+#import "BatteryService.h"
 @interface AppDelegate ()
 
 @end
 
 @implementation AppDelegate
--(BatteryGroup *)batteryGroup
-{
-    if (_batteryGroup == nil) {
-        _batteryGroup = [[BatteryGroup alloc] init];
-        _batteryGroup.address = 0x01;
-    }
-    return _batteryGroup;
-}
+
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
+    NSArray *array = [BatteryService inquiryPack];
+    if (array) {
+         [[MemDataManager shareManager] updateGroupData:array];
+    }
+   
+    
+    [[MemDataManager shareManager] readPlist];
+    
     // Override point for customization after application launch.
     NSLog(@"%@", NSLocalizedString(@"CFBundleDisplayName", Nil));
     //fake ip
@@ -38,7 +41,6 @@
     [[UINavigationBar appearance] setTintColor:[UIColor whiteColor]]; // 导航栏各种按钮颜色
     [[UINavigationBar appearance] setBackgroundImage:[[UIImage alloc] init] forBarMetrics:UIBarMetricsDefault];
     [[UINavigationBar appearance] setShadowImage: [[UIImage alloc] init]]; // 阴影关掉
-    
      [[UITabBar appearance] setTintColor:themeColor];
     UIStoryboard *mainStoryboard = [UIStoryboard storyboardWithName:@"Main"
                                                              bundle: nil];
@@ -48,16 +50,7 @@
     [SlideNavigationController sharedInstance].portraitSlideOffset = _window.frame.size.width*0.3;
     [SlideNavigationController sharedInstance].enableShadow = NO;
     
-    if(![[NSUserDefaults standardUserDefaults] boolForKey:@"firstStart"]){
-        [[NSUserDefaults standardUserDefaults] setBool:YES forKey:@"firstStart"];
-        [[NSUserDefaults standardUserDefaults] setValue:@"192.168.1.25" forKey:IPKey];
-        [[NSUserDefaults standardUserDefaults] setValue:@"8080" forKey:PortKey];
-        
-        [[NSUserDefaults standardUserDefaults] setValue:@"192.168.1.19" forKey:IPKey2];
-        [[NSUserDefaults standardUserDefaults] setValue:@"8080" forKey:PortKey2];
-        
-        [[NSUserDefaults standardUserDefaults] setValue:@"0" forKey:@"BatteryIndex"];
-    }
+
     return YES;
 }
 

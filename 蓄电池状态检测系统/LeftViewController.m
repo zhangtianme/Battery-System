@@ -14,6 +14,7 @@
 #import "SlideNavigationContorllerAnimatorScaleAndFade.h"
 #import "SlideNavigationContorllerAnimatorSlideAndFade.h"
 #import "Define.h"
+#import "MemDataManager.h"
 @interface LeftViewController ()<SlideNavigationControllerDelegate,UITableViewDataSource,UITableViewDelegate>
 {
     NSUInteger selectedIndex;
@@ -34,30 +35,31 @@
 - (void)viewWillAppear:(BOOL)animated
 {
     [super viewWillAppear:animated];
-    selectedIndex = [defaultBatteryIndex integerValue];
+    selectedIndex = [MemDataManager shareManager].isIntranet;
 }
 - (BOOL)slideNavigationControllerShouldDisplayLeftMenu
 {
     return YES;
 }
 
-- (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
-{
-   return 3;
-}
+//- (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
+//{
+//   return 3;
+//}
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
-    switch (section) {
-        case 0:
-            return 2;
-            break;
-        case 1:
-            return 1;
-            break;
-        default:
-            return 1;
-            break;
-    }
+    return 4;
+//    switch (section) {
+//        case 0:
+//            return 2;
+//            break;
+//        case 1:
+//            return 1;
+//            break;
+//        default:
+//            return 1;
+//            break;
+//    }
 }
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
@@ -66,25 +68,22 @@
     if (cell == nil) {
         cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:@"Cell"];
     }
-    if (indexPath.section == 0) {
-        if (indexPath.row == 0) {
-            cell.textLabel.text = @"2V电池组";
-            cell.imageView.image = [UIImage imageNamed:@"elecIcon.png"];
-            cell.accessoryType = selectedIndex==0?UITableViewCellAccessoryCheckmark:UITableViewCellAccessoryNone;
-        }
-        else
-        {
-            cell.textLabel.text = @"12V电池组";
-            cell.imageView.image = [UIImage imageNamed:@"elecIcon.png"];
-            cell.accessoryType = selectedIndex==0?UITableViewCellAccessoryNone:UITableViewCellAccessoryCheckmark;
-        }
-     
-        
+
+    if (indexPath.row == 0) {
+        cell.textLabel.text = @"外网控制";
+        cell.imageView.image = [UIImage imageNamed:@"网络.png"];
+        cell.accessoryType = selectedIndex==0?UITableViewCellAccessoryCheckmark:UITableViewCellAccessoryNone;
+    }
+    else if (indexPath.row == 1)
+    {
+        cell.textLabel.text = @"内网控制";
+        cell.imageView.image = [UIImage imageNamed:@"网络.png"];
+        cell.accessoryType = selectedIndex==0?UITableViewCellAccessoryNone:UITableViewCellAccessoryCheckmark;
     }
     else
     {
-         cell.textLabel.text = indexPath.section==1?@"网络配置":@"关于";
-         cell.imageView.image = indexPath.section==1?[UIImage imageNamed:@"网络.png"]:[UIImage imageNamed:@"关于.png"];
+         cell.textLabel.text = indexPath.row==2?@"电池组配置":@"关于";
+         cell.imageView.image = indexPath.row==2?[UIImage imageNamed:@"elecIcon.png"]:[UIImage imageNamed:@"关于.png"];
          cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
     }
     return cell;
@@ -97,23 +96,27 @@
                                                              bundle: nil];
     UIViewController *vc ;
      [tableView deselectRowAtIndexPath:indexPath animated:NO];
-    if (indexPath.section == 0 && selectedIndex!=indexPath.row) {
+    if ((indexPath.row == 0||indexPath.row == 1) && selectedIndex!=indexPath.row) {
         selectedIndex = indexPath.row;
         [self.tableView reloadSections:[NSIndexSet indexSetWithIndex:0] withRowAnimation:UITableViewRowAnimationNone];
-        //取出对象
-        AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
-        BatteryGroup *batteryGroup = appDelegate.batteryGroup;
-        [batteryGroup.socket disconnect];
-        [[NSUserDefaults standardUserDefaults] setValue:[NSString stringWithFormat:@"%lu",(unsigned long)selectedIndex] forKey:@"BatteryIndex"];
+        //外网模式断开所有socket连接
+        if (indexPath.row == 0) {
+            [[MemDataManager shareManager].groupArray enumerateObjectsUsingBlock:^(id  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+                BatteryGroup *group = obj;
+                [group.socket disconnect];
+            }];
+        }
+//        [batteryGroup.socket disconnect];
+        [[NSUserDefaults standardUserDefaults] setValue:[NSNumber numberWithBool:indexPath.row] forKey:@"NetMode"];
     }
-    else if(indexPath.section == 1)
+    if(indexPath.row == 2)
     {
         vc = [mainStoryboard instantiateViewControllerWithIdentifier: @"NetSetting"];
         [[SlideNavigationController sharedInstance] popToRootAndSwitchToViewController:vc
                                                                  withSlideOutAnimation:YES
                                                                          andCompletion:nil];
     }
-    else if(indexPath.section == 2)
+    if(indexPath.row == 3)
     {
         vc = [mainStoryboard instantiateViewControllerWithIdentifier: @"About"];
         [[SlideNavigationController sharedInstance] popToRootAndSwitchToViewController:vc

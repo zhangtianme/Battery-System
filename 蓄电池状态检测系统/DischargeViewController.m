@@ -12,7 +12,7 @@
 #import "TLTagsControl.h"
 #import "UIView+Extension.h"
 #define POINT_COUNT 30
-@interface DischargeViewController ()<BatteryManagerDelegate,TLTagsControlDelegate>
+@interface DischargeViewController ()<BatteryManagerDelegate,TLTagsControlDelegate,MemDataDelegate>
 {
     MBProgressHUD *mbHud;
     NSMutableArray *dischargeArray;
@@ -46,14 +46,22 @@
         mbHud.dimBackground = YES;
     }
 
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(changeBattery) name:@"ChangeBattery" object:nil];
+}
+- (void)changeBattery
+{
+    [self.tableView reloadData];
+}
+- (void)dealloc
+{
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 - (void)press:(UILongPressGestureRecognizer *)sender {
      if (sender.state == UIGestureRecognizerStateBegan)
      {
          NSLog(@"开始");
          //取出对象
-         AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
-          BatteryGroup *batteryGroup = appDelegate.batteryGroup;
+         BatteryGroup *batteryGroup = [MemDataManager shareManager].currentGroup;
          NSString *value = [batteryGroup.dischargeCurrent description];
 //         NSString *string = [NSString stringWithFormat:@"放电电流：%@",value];
          NSArray *nibArray = [[NSBundle mainBundle] loadNibNamed:@"hud" owner:self options:nil];
@@ -84,8 +92,8 @@
 - (void)viewWillAppear:(BOOL)animated
 {
     [super viewWillAppear:animated];
-    NSString *discharge = NSLocalizedString(@"discharge", nil);
-    self.tabBarController.title = discharge;
+//    NSString *discharge = NSLocalizedString(@"discharge", nil);
+//    self.tabBarController.title = discharge;
     
     UILabel *extraInfoLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, 70, 30)];
     //    extraInfoLabel.backgroundColor = [UIColor blackColor];
@@ -100,6 +108,7 @@
     [extraInfoLabel addGestureRecognizer:longPressRecognizer];
      });
     [[BatteryManager shareManager] setDelegate:self];
+    [MemDataManager shareManager].delegate = self;
     //更新界面
     [self.tableView reloadSections:[NSIndexSet indexSetWithIndexesInRange:NSMakeRange(1, 2)] withRowAnimation:UITableViewRowAnimationNone];
 }
@@ -114,10 +123,14 @@
 //    //更新界面
 //    [self.tableView reloadSections:[NSIndexSet indexSetWithIndex:1] withRowAnimation:UITableViewRowAnimationNone];
 //}
+- (void)serviceDidReceiveData
+{
+    //更新界面
+    [self.tableView reloadData];
+}
 - (void)managerDidReceiveDischargeValue:(NSDictionary *)dic
 {
-    AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
-    BatteryGroup *batteryGroup = appDelegate.batteryGroup;
+    BatteryGroup *batteryGroup = [MemDataManager shareManager].currentGroup;
     if (currentNumber==0) { //初次接收数据
         currentNumber = batteryGroup.batteryNumber.integerValue;
     }
@@ -274,8 +287,7 @@
         UILabel *unitLabel = [cell.contentView viewWithTag:3];
         unitLabel.text = unitArray[currentYIndex];
         
-        AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
-        BatteryGroup *batteryGroup = appDelegate.batteryGroup;
+        BatteryGroup *batteryGroup = [MemDataManager shareManager].currentGroup;
         UILabel *numberLabel = [cell.contentView viewWithTag:4];
         if (batteryGroup.batteryNumber!=0) {
             numberLabel.text = [NSString stringWithFormat:@"#%@",batteryGroup.batteryNumber];
@@ -291,8 +303,7 @@
             cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleValue1 reuseIdentifier:@"normalCell"];
         }
         //取出对象
-        AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
-        BatteryGroup *batteryGroup = appDelegate.batteryGroup;
+        BatteryGroup *batteryGroup = [MemDataManager shareManager].currentGroup;
         
         NSString *dischargeOutputVoltage = NSLocalizedString(@"dischargeOutputVoltage", nil);
 //        NSString *dischargeOutputCurrent = NSLocalizedString(@"dischargeOutputCurrent", nil);
@@ -423,8 +434,7 @@
 - (void)controlBtnClicked:(UIButton *)sender
 {
     //取出对象
-    AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
-    BatteryGroup *batteryGroup = appDelegate.batteryGroup;
+    BatteryGroup *batteryGroup = [MemDataManager shareManager].currentGroup;
     
     UITableViewCell *cell = (UITableViewCell *)sender.superview.superview;
     NSUInteger index = [[self.tableView indexPathForCell:cell] row]+1;
@@ -442,13 +452,37 @@
 //        [mbHud hide:YES afterDelay:1];
 //    }
     if (sender.tag%2 == 1) { //开始
-        [[BatteryManager shareManager] disChargeBattery:batteryGroup number:index start:YES];
+        
+        if ([MemDataManager shareManager].isIntranet) {
+            [[BatteryManager shareManager] disChargeBattery:batteryGroup number:index start:YES];
+        }
+        else
+        {
+            [BatteryService insertDisChargeOrderAddr:batteryGroup.address number:index isStart:YES];
+            
+            dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(5.0 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+                [[MemDataManager shareManager] updataRealData];
+            });
+        }
+
         [mbHud showWithTitle:[NSString stringWithFormat:@"开始放电-电池#%lu",(unsigned long)index] detail:nil];
         [mbHud hide:YES afterDelay:1];
     }
     else //if (sender.tag%2== 0)
     {
         [[BatteryManager shareManager] disChargeBattery:batteryGroup number:index start:NO];
+        if ([MemDataManager shareManager].isIntranet) {
+            [[BatteryManager shareManager] disChargeBattery:batteryGroup number:index start:NO];
+        }
+        else
+        {
+            [BatteryService insertDisChargeOrderAddr:batteryGroup.address number:index isStart:NO];
+            
+            dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(5.0 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+                [[MemDataManager shareManager] updataRealData];
+            });
+        }
+
         [mbHud showWithTitle:[NSString stringWithFormat:@"停止放电-电池#%lu",(unsigned long)index] detail:nil];
         [mbHud hide:YES afterDelay:1];
     }
@@ -457,8 +491,7 @@
 }
 - (IBAction)displayExtra:(id)sender {
     //取出对象
-    AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
-    BatteryGroup *batteryGroup = appDelegate.batteryGroup;
+    BatteryGroup *batteryGroup = [MemDataManager shareManager].currentGroup;
     NSString *value = [batteryGroup.dischargeCurrent description];
     [mbHud showWithTitle:@"放电电流" detail:value];
 }
