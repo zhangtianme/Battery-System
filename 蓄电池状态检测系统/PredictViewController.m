@@ -80,15 +80,12 @@
 - (void)refresh
 {
     BatteryGroup *batteryGroup = [MemDataManager shareManager].currentGroup;
-    //        [[BatteryManager shareManager] socket:battery.socket didReadData:receiveData withTag:10];
     if ([MemDataManager shareManager].isIntranet) {
          [[BatteryManager shareManager] readPredictedDataOfBattery:batteryGroup];
     }
     else
     {
         [[MemDataManager shareManager] updataRealData];
-//       NSDictionary *dic = [BatteryService inquiryPackRealDataWithAddr:@"1"];
-//        NSLog(@"%@",dic);
     }
     
    

@@ -22,6 +22,7 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateSites) name:@"GetSites" object:nil];
     self.navigationItem.backBarButtonItem=[[UIBarButtonItem alloc] initWithTitle:@"返回" style:UIBarButtonItemStylePlain target:nil action:nil];
  
     sitesArray = [MemDataManager shareManager].groupArray;
@@ -62,6 +63,12 @@
 - (void)dealloc
 {
     [[NSNotificationCenter defaultCenter] removeObserver:self name:@"Dismiss" object:nil];
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:@"GetSites" object:nil];
+}
+- (void)updateSites
+{
+    sitesArray = [MemDataManager shareManager].groupArray;
+     [self setTile:[(BatteryGroup *)sitesArray[[MemDataManager shareManager].currentIndex] name]];
 }
 - (void)dimiss
 {

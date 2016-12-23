@@ -20,13 +20,17 @@
 
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
-    NSArray *array = [BatteryService inquiryPack];
-    if (array) {
-         [[MemDataManager shareManager] updateGroupData:array];
-    }
-   
-    
+    //更新站点信息
+    dispatch_async(dispatch_get_global_queue(0, 0), ^{
+        NSArray *array = [BatteryService inquiryPack];
+        dispatch_async(dispatch_get_main_queue(), ^{
+            if (array) {
+                [[MemDataManager shareManager] updateGroupData:array];
+            }
+        });
+    });
     [[MemDataManager shareManager] readPlist];
+    
     
     // Override point for customization after application launch.
     NSLog(@"%@", NSLocalizedString(@"CFBundleDisplayName", Nil));

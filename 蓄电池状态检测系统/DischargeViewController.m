@@ -458,7 +458,9 @@
         }
         else
         {
-            [BatteryService insertDisChargeOrderAddr:batteryGroup.address number:index isStart:YES];
+            dispatch_async(dispatch_get_global_queue(0, 0), ^{
+                [BatteryService insertDisChargeOrderAddr:batteryGroup.address number:index isStart:YES];
+            });
             
             dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(5.0 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
                 [[MemDataManager shareManager] updataRealData];
@@ -476,7 +478,9 @@
         }
         else
         {
-            [BatteryService insertDisChargeOrderAddr:batteryGroup.address number:index isStart:NO];
+            dispatch_async(dispatch_get_global_queue(0, 0), ^{
+                [BatteryService insertDisChargeOrderAddr:batteryGroup.address number:index isStart:NO];
+            });
             
             dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(5.0 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
                 [[MemDataManager shareManager] updataRealData];

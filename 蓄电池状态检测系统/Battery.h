@@ -23,4 +23,6 @@
 @property(nonatomic,retain) NSNumber *chargeEnergy;
 @property(assign)BOOL state;
 @property(nonatomic,retain)NSString *getTimeFore;
+@property(nonatomic,retain)NSString *getTimeCharge;
+@property(nonatomic,retain)NSString *getTimeDischarge;
 @end

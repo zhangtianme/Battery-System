@@ -3,36 +3,20 @@
 <plist version="1.0">
 <array>
 	<dict>
-		<key>ip</key>
-		<string>123</string>
-		<key>port</key>
-		<string>345</string>
-		<key>name</key>
-		<string>野外123站</string>
+		<key>BID</key>
+		<string>1</string>
+		<key>BName</key>
+		<string>基站1</string>
+		<key>BAddr</key>
+		<string>01</string>
 	</dict>
 	<dict>
-		<key>ip</key>
-		<string>123</string>
-		<key>port</key>
-		<string>345</string>
-		<key>name</key>
-		<string>武汉大学</string>
-	</dict>
-	<dict>
-		<key>ip</key>
-		<string>123</string>
-		<key>port</key>
-		<string>345</string>
-		<key>name</key>
-		<string>武汉</string>
-	</dict>
-	<dict>
-		<key>ip</key>
-		<string>123</string>
-		<key>port</key>
-		<string>345</string>
-		<key>name</key>
-		<string>实验室</string>
+		<key>BID</key>
+		<string>2</string>
+		<key>BName</key>
+		<string>基站2</string>
+		<key>BAddr</key>
+		<string>02</string>
 	</dict>
 </array>
 </plist>

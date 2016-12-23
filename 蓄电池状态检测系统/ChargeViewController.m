@@ -328,15 +328,17 @@
         }
         else
         {
-            [BatteryService insertChargeOrderAddr:batteryGroup.address number:index isStart:YES];
+            dispatch_async(dispatch_get_global_queue(0, 0), ^{
+                [BatteryService insertChargeOrderAddr:batteryGroup.address number:index isStart:YES];
+            });
+
+           
             
             dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(5.0 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
                  [[MemDataManager shareManager] updataRealData];
             });
         }
-        
 
-     
         [mbHud showWithTitle:@"开始充电" detail:nil];
         [mbHud hide:YES afterDelay:1];
     }
@@ -347,8 +349,9 @@
         }
         else
         {
-            [BatteryService insertChargeOrderAddr:batteryGroup.address  number:index isStart:NO];
-
+            dispatch_async(dispatch_get_global_queue(0, 0), ^{
+                  [BatteryService insertChargeOrderAddr:batteryGroup.address number:index isStart:NO];
+            });
             dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(5.0 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
                 [[MemDataManager shareManager] updataRealData];
             });
