@@ -10,9 +10,11 @@
 #import "Define.h"
 #import "BatteryService.h"
 #import "MemDataManager.h"
+#import "HisDataViewController.h"
 @interface PredictViewController ()<BatteryManagerDelegate,MemDataDelegate>
 {
-    NSUInteger showIndex;
+    NSUInteger showIndex; //之前准备按参数、按电池两种方式显示的，后来放弃治疗了
+    NSDictionary *paramDic;
 }
 @end
 
@@ -20,7 +22,7 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    self.tableView.allowsSelection = NO;
+//    self.tableView.allowsSelection = NO;
     self.tableView.backgroundColor = matchColor;
     self.tableView.tableFooterView = [[UIView alloc] init];
 //    NSString *prediction = NSLocalizedString(@"prediction", nil);
@@ -49,7 +51,11 @@
         });
     }];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(changeBattery) name:@"ChangeBattery" object:nil];
+     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(changeBattery) name:@"GetSites" object:nil];
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(changeBattery) name:@"NetMode" object:nil];
+
 }
+
 - (void)changeBattery
 {
     [self.tableView reloadData];
@@ -156,6 +162,23 @@
         }
         NSString *iconName = [array[indexPath.row] objectAtIndex:3];
         cell.imageView.image = [UIImage imageNamed:iconName];
+      if (![MemDataManager shareManager].isIntranet)
+      {
+        if (indexPath.row == 6) {
+            cell.accessoryType = UITableViewCellAccessoryNone;
+            cell.selectionStyle = UITableViewCellSelectionStyleNone;
+        }
+        else
+        {
+            cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
+            cell.selectionStyle = UITableViewCellSelectionStyleDefault;
+        }
+      }
+        else
+        {
+            cell.selectionStyle = UITableViewCellSelectionStyleNone;
+            cell.accessoryType = UITableViewCellAccessoryNone;
+        }
         return cell;
     }
     return cell;
@@ -189,6 +212,46 @@
     else
         array = @[batteryVoltage,internalResistance,peakPointCurrent,healthDegree,batteryCapacity,batteryLevel];
     return array[section];
+}
+- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    [tableView deselectRowAtIndexPath:indexPath animated:YES];
+    if(indexPath.row != 6&& [MemDataManager shareManager].isIntranet != YES) //历史数据
+    {
+        
+        NSString *batteryVoltage = NSLocalizedString(@"batteryVoltage", nil);
+        NSString *internalResistance = NSLocalizedString(@"internalResistance", nil);
+        NSString *peakPointCurrent = NSLocalizedString(@"peakPointCurrent", nil);
+        NSString *healthDegree = NSLocalizedString(@"healthDegree", nil);
+        NSString *batteryCapacity = NSLocalizedString(@"batteryCapacity", nil);
+        NSString *batteryLevel = NSLocalizedString(@"batteryLevel", nil);
+        
+        
+        NSArray *array = @[@[batteryVoltage,@"voltage",@"V",@"voltageIcon"],
+                           @[internalResistance,@"internalRes",@"mΩ",@"res"],
+                           @[peakPointCurrent,@"maxCurrent",@"A",@"currentIcon"],
+                           @[healthDegree,@"healthState",@"%",@"health"],
+                           @[batteryLevel,@"currentEnergy",@"%",@"elecIcon"],
+                           @[batteryCapacity,@"capacity",@"AH",@"elecIcon"],
+                           @[@"获取时间",@"getTimeFore",@"",@"time"]
+                           ];
+        NSArray *nameArray = @[@"Fore_U",@"Fore_R",@"Fore_I",@"Fore_Health",@"Fore_Capacity",@"Fore_Electricity"];
+        NSUInteger number = indexPath.section+1;
+     
+        paramDic = @{@"BID":[MemDataManager shareManager].currentGroup.bid,
+                     @"Number":[NSString stringWithFormat:@"%lu",(unsigned long)number],
+                     @"Para":nameArray[indexPath.row],
+                     @"name":[array[indexPath.row] firstObject],
+                     @"Unit":array[indexPath.row][2],
+                     @"isPack":@"0"
+                     };
+         [self performSegueWithIdentifier:@"Fore" sender:nil];
+    }
+}
+- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
+{
+    HisDataViewController *hisVC = segue.destinationViewController;
+    hisVC.paramDic = paramDic;
 }
 //- (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section
 //{

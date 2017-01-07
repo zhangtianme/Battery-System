@@ -16,6 +16,7 @@
 @property (nonatomic,retain)NSString *ip;
 @property (nonatomic,retain)NSString *name;
 @property (nonatomic,assign)NSUInteger port;
+@property(nonatomic,retain)NSString *getTimePack;
 
 
 @property (nonatomic,assign)NSUInteger address;

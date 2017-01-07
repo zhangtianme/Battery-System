@@ -20,6 +20,7 @@
     BOOL isLoad;
     UIView *hudView;
     NSInteger currentNumber;
+    BOOL isDischargeSuccess;
 }
 
 
@@ -45,8 +46,32 @@
         [[[UIApplication sharedApplication] keyWindow] addSubview:mbHud];
         mbHud.dimBackground = YES;
     }
+    __weak typeof(self) weakSelf = self;
+    [self.tableView addHeaderWithCallback:^{
+
+        [[MemDataManager shareManager] updataRealData];
+        
+        //加HUD
+        [MBProgressHUD showMessage:nil];
+        
+        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.4 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+            [weakSelf.tableView headerEndRefreshing];
+            [MBProgressHUD hideHUD];
+        });
+    }];
 
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(changeBattery) name:@"ChangeBattery" object:nil];
+     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(changeBattery) name:@"GetSites" object:nil];
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(changeNetMode) name:@"NetMode" object:nil];
+}
+- (void)changeNetMode
+{
+    if ([MemDataManager shareManager].isIntranet) {
+        self.tableView.headerHidden = YES;
+    }
+    else
+        self.tableView.headerHidden = NO;
+    [self.tableView reloadData];
 }
 - (void)changeBattery
 {
@@ -92,6 +117,14 @@
 - (void)viewWillAppear:(BOOL)animated
 {
     [super viewWillAppear:animated];
+    if ([MemDataManager shareManager].isIntranet) {
+        self.tableView.headerHidden = YES;
+    }
+    else
+    {
+        self.tableView.headerHidden = NO;
+        [self.tableView reloadData];
+    }
 //    NSString *discharge = NSLocalizedString(@"discharge", nil);
 //    self.tabBarController.title = discharge;
     
@@ -110,7 +143,12 @@
     [[BatteryManager shareManager] setDelegate:self];
     [MemDataManager shareManager].delegate = self;
     //更新界面
-    [self.tableView reloadSections:[NSIndexSet indexSetWithIndexesInRange:NSMakeRange(1, 2)] withRowAnimation:UITableViewRowAnimationNone];
+    if ([MemDataManager shareManager].isIntranet) {
+        [self.tableView reloadSections:[NSIndexSet indexSetWithIndexesInRange:NSMakeRange(1, 2)] withRowAnimation:UITableViewRowAnimationNone];
+    }
+    else
+        [self.tableView reloadSections:[NSIndexSet indexSetWithIndexesInRange:NSMakeRange(1, 1)] withRowAnimation:UITableViewRowAnimationNone];
+    
 }
 - (void)viewWillDisappear:(BOOL)animated
 {
@@ -125,6 +163,10 @@
 //}
 - (void)serviceDidReceiveData
 {
+    if ([MemDataManager shareManager].isIntranet) {
+        return;
+    }
+    isDischargeSuccess = YES;
     //更新界面
     [self.tableView reloadData];
 }
@@ -159,13 +201,21 @@
 }
 #pragma mark - Table view data source
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
-    return 3;
+//    if ([MemDataManager shareManager].isIntranet) {
+//        return 3;
+//    }
+//    else
+        return 3;
+
+
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-    if (section == 2) {
-        return 1;
-    }
+//    if ([MemDataManager shareManager].isIntranet) {
+        if (section == 2) {
+            return 1;
+        }
+
     return section==0?4:3;
 }
 
@@ -213,6 +263,23 @@
     }
     else if(indexPath.section == 2)
     {
+        if (![MemDataManager shareManager].isIntranet)
+        {
+            cell = [tableView dequeueReusableCellWithIdentifier:@"normalCell"];
+            if (cell == nil) {
+                cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleValue1 reuseIdentifier:@"normalCell"];
+            }
+            cell.textLabel.text = @"放电电池编号";
+            cell.imageView.image = [UIImage imageNamed:@"编号.png"];
+            
+            if ([MemDataManager shareManager].currentGroup.batteryNumber.integerValue == 0 ||[MemDataManager shareManager].currentGroup.batteryNumber == nil) {
+                cell.detailTextLabel.text = @"无";
+            }
+            else
+                cell.detailTextLabel.text = [NSString stringWithFormat:@"#%@",[MemDataManager shareManager].currentGroup.batteryNumber];
+            return cell;
+        }
+            
         cell = [tableView dequeueReusableCellWithIdentifier:@"chartCell"];
      
         DVLineChartView *ccc = [cell.contentView viewWithTag:1];
@@ -364,6 +431,10 @@
 }
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
 {
+    if (![MemDataManager shareManager].isIntranet && indexPath.section==2)
+    {
+        return 44;
+    }
     if (indexPath.section == 2) {
         return 280;
     }
@@ -373,6 +444,10 @@
 - (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section
 {
     NSArray *array = @[@"操作",@"参数",@"曲线"];
+    if (![MemDataManager shareManager].isIntranet && section==2)
+    {
+        return @"编号";
+    }
     return array[section];
 }
 //- (CGFloat)tableView:(UITableView *)tableView heightForFooterInSection:(NSInteger)section
@@ -460,10 +535,24 @@
         {
             dispatch_async(dispatch_get_global_queue(0, 0), ^{
                 [BatteryService insertDisChargeOrderAddr:batteryGroup.address number:index isStart:YES];
+//                dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(2 * NSEC_PER_SEC)), dispatch_get_global_queue(0, 0), ^{
+//                    isDischargeSuccess = NO;
+//                    [[MemDataManager shareManager] updataRealData];
+//                });
             });
-            
-            dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(5.0 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-                [[MemDataManager shareManager] updataRealData];
+
+            dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1.5 * NSEC_PER_SEC)), dispatch_get_global_queue(0, 0), ^{
+                isDischargeSuccess = NO;
+                 if (![MemDataManager shareManager].isIntranet) {
+                     [[MemDataManager shareManager] updataRealData];
+                 }
+                dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1.5 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+                    if (![MemDataManager shareManager].isIntranet) {
+                        [[MemDataManager shareManager] updataRealData];
+                    }
+
+                    
+                });
             });
         }
 
@@ -480,10 +569,24 @@
         {
             dispatch_async(dispatch_get_global_queue(0, 0), ^{
                 [BatteryService insertDisChargeOrderAddr:batteryGroup.address number:index isStart:NO];
+//                dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(2 * NSEC_PER_SEC)), dispatch_get_global_queue(0, 0), ^{
+//                    isDischargeSuccess = NO;
+//                    [[MemDataManager shareManager] updataRealData];
+//                });
             });
-            
-            dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(5.0 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-                [[MemDataManager shareManager] updataRealData];
+//
+            dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1.5 * NSEC_PER_SEC)), dispatch_get_global_queue(0, 0), ^{
+                isDischargeSuccess = NO;
+                if (![MemDataManager shareManager].isIntranet) {
+                    [[MemDataManager shareManager] updataRealData];
+                }
+
+                dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1.5* NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+                    if (![MemDataManager shareManager].isIntranet) {
+                        [[MemDataManager shareManager] updataRealData];
+                    }
+                });
+
             });
         }
 

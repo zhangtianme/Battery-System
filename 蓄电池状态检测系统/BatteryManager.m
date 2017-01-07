@@ -189,7 +189,14 @@
     //发送数据
     [sock writeData:sendData withTimeout:WriteTimeout tag:1];
 }
-
+//获取当前时间
+- (NSString *)getCurrentTime
+{
+    NSDateFormatter *formatter =[[NSDateFormatter alloc] init];
+    [formatter setDateFormat:@"yyyy-MM-dd HH:mm"];
+    NSString *dateString = [formatter stringFromDate:[NSDate date]];
+    return dateString;
+}
 #pragma mark -  GCDAsyncSocket Delegate
 - (void)socket:(GCDAsyncSocket *)sock didReadData:(NSData *)data withTag:(long)tag
 {
@@ -230,6 +237,7 @@
                 battery.healthState = [NSNumber numberWithFloat: (allData[startIndex+6] )];
                 battery.currentEnergy = [NSNumber numberWithFloat: (allData[startIndex+7])];
                 battery.capacity = [NSNumber numberWithFloat: 0.01*(allData[startIndex+8]*256 + allData[startIndex+9])];
+                battery.getTimeFore = [self getCurrentTime];
             }
             if ([self.delegate respondsToSelector:@selector(managerDidReceiveData)]) {
                 [self.delegate managerDidReceiveData];
@@ -259,7 +267,7 @@
             
             batteryGroup.chargeVoltage = [NSNumber numberWithFloat: 0.001*(allData[44]*256 + allData[45])];
             batteryGroup.chargeCurrent = [NSNumber numberWithFloat: 0.01*(allData[46]*256 + allData[47])];
-      
+            batteryGroup.getTimePack = [self getCurrentTime];
             
             for (int i=0; i<4; i++) {
                 Battery *battery = batteryGroup.batterys[i];

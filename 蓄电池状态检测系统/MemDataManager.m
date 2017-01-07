@@ -36,6 +36,13 @@
     else
         return number.boolValue;
 }
+- (void)setIsIntranet:(BOOL)isIntranet
+{
+    _currentIndex = 0;
+    [[NSUserDefaults standardUserDefaults] setValue:[NSNumber numberWithBool:isIntranet] forKey:@"NetMode"];
+    [self readPlist];
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"GetSites" object:nil];
+}
 - (BatteryGroup *)currentGroup
 {
     if (_groupArray == nil) {
@@ -58,10 +65,29 @@
     }
     return _groupArray;
 }
+
 - (void)readPlist
 {
-    NSMutableArray *data = [[NSUserDefaults standardUserDefaults] valueForKey:@"battery"];
-    if (data == nil) {
+    NSMutableArray *data ;
+    if (self.isIntranet)
+    {
+        data = [[NSUserDefaults standardUserDefaults] valueForKey:@"batteryIntranet"];
+        NSMutableArray *newArray = [NSMutableArray array];
+        for (NSDictionary *dic in data) {
+            BatteryGroup *group = [BatteryGroup new];
+            group.name = dic[@"name"];
+            group.ip = dic[@"ip"];
+            group.port = [dic[@"port"] integerValue];
+            group.address = [dic[@"address"] integerValue];
+            [newArray addObject:group];
+        }
+        _groupArray = newArray;
+        return;
+    }
+  
+    data = [[NSUserDefaults standardUserDefaults] valueForKey:@"battery"];
+    if (data == nil)
+    {
         NSString *plistPath = [[NSBundle mainBundle] pathForResource:@"plistSBMS" ofType:@"plist"];
         data = [[NSMutableArray alloc] initWithContentsOfFile:plistPath];
     }
@@ -72,15 +98,17 @@
         group.bid = dic[@"BID"];
         group.name = dic[@"BName"];
         group.address =  [dic[@"BAddr"] integerValue];
-        group.batteryNumber = @1;
+        group.batteryNumber = @0;
 //        group.ip =  dic[@"ip"];
 //        group.port = [dic[@"port"] integerValue];
 //        group.name = dic[@"name"];
         [oldGroupArray addObject:group];
     }
     _groupArray = oldGroupArray;
-    
 }
+    
+    
+
 - (void)updateGroupData:(NSArray *)data
 {
     if (data == nil) {
@@ -89,14 +117,6 @@
     [[NSUserDefaults standardUserDefaults] setValue:data forKey:@"battery"];
     [self readPlist];
     [[NSNotificationCenter defaultCenter] postNotificationName:@"GetSites" object:nil];
-//    //获取应用程序沙盒的Documents目录
-//    NSArray *paths=NSSearchPathForDirectoriesInDomains(NSDocumentDirectory,NSUserDomainMask,YES);
-//    NSString *plistPath1 = [paths objectAtIndex:0];
-//    
-//    //得到完整的文件名
-//    NSString *filename=[plistPath1 stringByAppendingPathComponent:@"plistSBMS.plist"];
-//    //输入写入
-//    [data writeToFile:filename atomically:YES];
 }
 - (void)updataRealData
 {
@@ -106,7 +126,6 @@
         return;
     }
     dispatch_async(dispatch_get_global_queue(0, 0), ^{
-       dispatch_async(dispatch_get_main_queue(), ^{
            NSDictionary *dic = [BatteryService inquiryPackRealDataWithAddr:self.currentGroup.bid];
            NSArray *array = [BatteryService inquirySubRealDataWithAddr:_currentGroup.bid];
            if (dic!=nil) {
@@ -126,6 +145,8 @@
                _currentGroup.batteryNumber = [NSNumber numberWithInteger:[dic[@"DisCharge_Number"] integerValue]];
                _currentGroup.workState = [NSNumber numberWithInteger:[dic[@"Pack_State"] integerValue]];
                _currentGroup.isMaintain = [NSNumber numberWithInteger:[dic[@"Pack_Maintenancestate"] integerValue]];
+               _currentGroup.getTimePack = [dic[@"GetTime_Pack"] substringWithRange:NSMakeRange(0, 16)];
+               _currentGroup.getTimePack = [_currentGroup.getTimePack stringByReplacingOccurrencesOfString:@"T" withString:@" "];
            }
            
            if (array != nil) {
@@ -164,12 +185,13 @@
                    battery.getTimeFore = [battery.getTimeFore stringByReplacingOccurrencesOfString:@"T" withString:@" "];
                }
            }
-           
-           if ([self.delegate respondsToSelector:@selector(serviceDidReceiveData)]) {
-               [self.delegate serviceDidReceiveData];
-           }
+        //需在主线程执行相关刷新操作
+           dispatch_async(dispatch_get_main_queue(), ^{
+               if ([self.delegate respondsToSelector:@selector(serviceDidReceiveData)]) {
+                   [self.delegate serviceDidReceiveData];
+               }
+           });
        });
-    });
   }
 
 @end

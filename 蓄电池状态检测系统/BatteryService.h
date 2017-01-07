@@ -16,4 +16,6 @@
 + (NSArray *)inquirySubRealDataWithAddr:(NSString *)addr;
 + (NSString *)insertChargeOrderAddr:(NSUInteger)addr number:(int)number isStart:(BOOL)isStart;
 + (NSString *)insertDisChargeOrderAddr:(NSUInteger)addr number:(int)number isStart:(BOOL)isStart;
++ (NSArray *)inquiryPackHisData:(NSArray *)paraArray;
++ (NSArray *)inquirySubHisData:(NSArray *)paraArray;
 @end

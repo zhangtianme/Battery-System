@@ -22,7 +22,7 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateSites) name:@"GetSites" object:nil];
+   
     self.navigationItem.backBarButtonItem=[[UIBarButtonItem alloc] initWithTitle:@"返回" style:UIBarButtonItemStylePlain target:nil action:nil];
  
     sitesArray = [MemDataManager shareManager].groupArray;
@@ -59,6 +59,11 @@
     
     [self setTile:[(BatteryGroup *)sitesArray[0] name]];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(dimiss) name:@"Dismiss" object:nil];
+     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateSites) name:@"GetSites" object:nil];
+}
+- (void)viewWillDisappear:(BOOL)animated
+{
+//   self.tabBarController.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithCustomView:[UIView new]];
 }
 - (void)dealloc
 {
@@ -82,8 +87,8 @@
     UILabel *label = [self.navigationItem.titleView viewWithTag:1];
     UIImageView *imageView = [self.navigationItem.titleView viewWithTag:2];
     float tWidth,lWidth=size.width;
-    if (imageView.width+size.width >self.view.width-80) {
-        tWidth = self.view.width-80;
+    if (imageView.width+size.width >self.view.width-100) {
+        tWidth = self.view.width-100;
         lWidth = tWidth - imageView.width;
     }
     else
@@ -111,6 +116,7 @@
     sitesArray = [MemDataManager shareManager].groupArray;
     for (BatteryGroup *group in sitesArray) {
         KxMenuItem *item = [KxMenuItem menuItem:group.name image:nil target:self action:@selector(pushMenuItem:)];
+//        item.alignment = NSTextAlignmentCenter;
         [menuArray addObject:item];
     }
 

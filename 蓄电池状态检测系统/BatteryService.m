@@ -76,6 +76,22 @@
     NSArray *array = [firstLayer arrayValueForKeyPath:[firstLayer.nodeKeys firstObject]];
     return array;
 }
++ (NSArray *)inquiryPackHisData:(NSArray *)paraArray
+{
+    NSDictionary *resultDic = [BatteryService webServiceWithMethod:@"Inquiry_Pack_H" paraArray:paraArray];
+    //NewDataSet
+    NSDictionary *firstLayer = [resultDic valueForKey:[resultDic.nodeKeys firstObject]];
+    NSArray *array = [firstLayer arrayValueForKeyPath:[firstLayer.nodeKeys firstObject]];
+    return array;
+}
++ (NSArray *)inquirySubHisData:(NSArray *)paraArray
+{
+    NSDictionary *resultDic = [BatteryService webServiceWithMethod:@"Inquiry_Sub_H" paraArray:paraArray];
+    //NewDataSet
+    NSDictionary *firstLayer = [resultDic valueForKey:[resultDic.nodeKeys firstObject]];
+    NSArray *array = [firstLayer arrayValueForKeyPath:[firstLayer.nodeKeys firstObject]];
+    return array;
+}
 + (NSString *)insertChargeOrderAddr:(NSUInteger)addr number:(int)number isStart:(BOOL)isStart
 {
 
