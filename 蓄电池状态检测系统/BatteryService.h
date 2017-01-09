@@ -18,4 +18,6 @@
 + (NSString *)insertDisChargeOrderAddr:(NSUInteger)addr number:(int)number isStart:(BOOL)isStart;
 + (NSArray *)inquiryPackHisData:(NSArray *)paraArray;
 + (NSArray *)inquirySubHisData:(NSArray *)paraArray;
++ (NSArray *)InquirySubStatistics;
++ (NSArray *)InquirySubList:(NSString *)hid;
 @end

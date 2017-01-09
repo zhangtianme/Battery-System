@@ -260,7 +260,7 @@
 //    else
     cell.textLabel.text = dataDic[@"Value"];
     
-//    cell.textLabel.text = [dataDic[@"Value"] stringByAppendingString:dataDic[@"Unit"]];
+    cell.textLabel.text = [dataDic[@"Value"] stringByAppendingString:_paramDic[@"Unit"]];
     cell.detailTextLabel.text = date;
     return cell;
 }

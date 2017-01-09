@@ -92,6 +92,25 @@
     NSArray *array = [firstLayer arrayValueForKeyPath:[firstLayer.nodeKeys firstObject]];
     return array;
 }
++ (NSArray *)InquirySubStatistics
+{
+    NSDictionary *resultDic = [BatteryService webServiceWithMethod:@"Inquiry_SubStatistics" paraArray:nil];
+    //NewDataSet
+    NSDictionary *firstLayer = [resultDic valueForKey:[resultDic.nodeKeys firstObject]];
+    NSArray *array = [firstLayer arrayValueForKeyPath:[firstLayer.nodeKeys firstObject]];
+    return array;
+}
++ (NSArray *)InquirySubList:(NSString *)hid
+{
+    NSDictionary *paraDic1 = [NSDictionary dictionaryWithObjectsAndKeys:hid,@"HID", nil];
+    NSArray *paraArray = [NSArray arrayWithObjects:paraDic1, nil];
+
+    NSDictionary *resultDic = [BatteryService webServiceWithMethod:@"Inquiry_SubList" paraArray:paraArray];
+    //NewDataSet
+    NSDictionary *firstLayer = [resultDic valueForKey:[resultDic.nodeKeys firstObject]];
+    NSArray *array = [firstLayer arrayValueForKeyPath:[firstLayer.nodeKeys firstObject]];
+    return array;
+}
 + (NSString *)insertChargeOrderAddr:(NSUInteger)addr number:(int)number isStart:(BOOL)isStart
 {
 
@@ -272,7 +291,7 @@
     if (result.count > 1)
     {
         NSString *resultString = [[result lastObject] XMLString];
-        XMLDictionaryParser *parser = [XMLDictionaryParser sharedInstance];
+        XMLDictionaryParser *parser = [[XMLDictionaryParser alloc] init];
         parser.attributesMode = XMLDictionaryAttributesModeDiscard;
         resultDic = [parser dictionaryWithString:resultString];
     }

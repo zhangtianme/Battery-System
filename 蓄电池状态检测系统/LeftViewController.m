@@ -56,7 +56,7 @@
 //}
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
-    return 4;
+    return 5;
 //    switch (section) {
 //        case 0:
 //            return 2;
@@ -96,13 +96,22 @@
         cell.imageView.image = [UIImage imageNamed:@"网络.png"];
         cell.accessoryType = selectedIndex==0?UITableViewCellAccessoryNone:UITableViewCellAccessoryCheckmark;
     }
+    else if (indexPath.row == 2)
+    {
+        if ([cell.contentView viewWithTag:1]) {
+            [[cell.contentView viewWithTag:1] removeFromSuperview];
+        }
+        cell.textLabel.text = @"健康查询";
+        cell.imageView.image = [UIImage imageNamed:@"health.png"];
+        cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
+    }
     else
     {
         if ([cell.contentView viewWithTag:1]) {
             [[cell.contentView viewWithTag:1] removeFromSuperview];
         }
-         cell.textLabel.text = indexPath.row==2?@"内网配置":@"关于";
-         cell.imageView.image = indexPath.row==2?[UIImage imageNamed:@"elecIcon.png"]:[UIImage imageNamed:@"关于.png"];
+         cell.textLabel.text = indexPath.row==3?@"内网配置":@"关于";
+         cell.imageView.image = indexPath.row==3?[UIImage imageNamed:@"elecIcon.png"]:[UIImage imageNamed:@"关于.png"];
          cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
     }
     return cell;
@@ -188,12 +197,20 @@
     }
     if(indexPath.row == 2)
     {
+        vc = [mainStoryboard instantiateViewControllerWithIdentifier: @"HList"];
+        [[SlideNavigationController sharedInstance] popToRootAndSwitchToViewController:vc
+                                                                 withSlideOutAnimation:YES
+                                                                         andCompletion:nil];
+
+    }
+    if(indexPath.row == 3)
+    {
         vc = [mainStoryboard instantiateViewControllerWithIdentifier: @"NetSetting"];
         [[SlideNavigationController sharedInstance] popToRootAndSwitchToViewController:vc
                                                                  withSlideOutAnimation:YES
                                                                          andCompletion:nil];
     }
-    if(indexPath.row == 3)
+    if(indexPath.row == 4)
     {
         vc = [mainStoryboard instantiateViewControllerWithIdentifier: @"About"];
         [[SlideNavigationController sharedInstance] popToRootAndSwitchToViewController:vc

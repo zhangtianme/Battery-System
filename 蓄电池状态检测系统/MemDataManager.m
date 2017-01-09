@@ -154,6 +154,17 @@
                if (_currentGroup.batteryNumber.integerValue != 0) {
                    dicDisCharge = array[_currentGroup.batteryNumber.integerValue-1];
                }
+               else
+               {
+                   _currentGroup.dischargeVoltage = nil;
+                   _currentGroup.dischargeCurrent = nil;
+                   _currentGroup.dischargeCapacity = nil;
+                   
+//                   NSString *time = dicDisCharge[@"Discharge_Time"];
+                   _currentGroup.hour = nil;
+                   _currentGroup.minute = nil;
+                   _currentGroup.second = nil;
+               }
                if (dicDisCharge[@"Discharge_U"]) {
                    _currentGroup.dischargeVoltage = [NSNumber numberWithFloat:[dicDisCharge[@"Discharge_U"] floatValue]];
                    _currentGroup.dischargeCurrent = [NSNumber numberWithFloat:[dicDisCharge[@"Discharge_I"] floatValue]];
